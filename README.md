@@ -1,6 +1,12 @@
 # Mallens Campaign Persistence
 
-A system for keeping track of player inventorys between missions of a persistant campaign.
+Have you ever found yourself planning an epic campaign, persistent inventories, multi-month mission marathons, and run into the same issue every Arma community does?
+You need a system for tracking all these things, and of course the obvious option is a spreadsheet, but now you have an insane amount of overhead, need to trust the players will record all their items correctly, and generally its all a faff...
+
+<ins>**WELL NO MORE!**</ins>
+
+Mallens Arma Campaign Persistence (MACP) is here to remove all of that nonsense!
+MACP is a system that automatically tracks players inventories and their loot across missions removing the need for a spreadsheet as everything is simply there in game!
 
 ## USAGE
 
@@ -18,7 +24,7 @@ MACP includes the following features currently:
 With planned features such as:
 
 - Admin Tools
-  - Live access to player vaults
+	- Live access to player vaults
 	- Player Kit rollback and snapshot inspection
 	- Offline Kit and Vault Management
 - Restriction areas for personal vaults
