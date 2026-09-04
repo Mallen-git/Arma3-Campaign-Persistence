@@ -30,17 +30,12 @@ if (not isNull _overideUnit) then
 
 if (isNull _requestedUIDUnit) exitWith {diag_log (text "MACP - ERROR: Requested current loadout with UID that does not point to a unit")};
 
-//get default kit incase of new player
-_defaultKit = macp_currentCampaignData getOrDefault ["defaultKit", [[],[],[],[],[],[],"","",[],["","","","","",""]], true];
-
 //get players profile
-_allPlayerProfiles = macp_currentCampaignData getOrDefault ["players", createHashMap, true];
-_playerProfile = _allPlayerProfiles getOrDefault [_requestedUID, createHashMapFromArray [["currentInventory", _defaultKit], ["previousInventorys", createHashMap], ["personalVault", [[],[],[],[]]]], true];
-_currentInventory = _playerProfile getOrDefault ["currentInventory", _defaultKit, true];
+_allPlayerProfiles = macp_currentCampaignData get "players";
+_playerProfile = _allPlayerProfiles get _requestedUID;
+_currentInventory = _playerProfile get "currentInventory";
 
+//set inventory
 _requestedUIDUnit setUnitLoadout _currentInventory;
 
-//clean up and save any defaults that were set
-_allPlayerProfiles set [_requestedUID, _playerProfile];
-macp_currentCampaignData set ["players", _allPlayerProfiles];
-[] call macp_core_fnc_saveCampaign;
+saveProfileNamespace;

@@ -2,16 +2,16 @@ class CfgFunctions
 {
 	class macp_core
 	{
-		class functions
+		class core
 		{
 			file = "macp_core\coreFunctions";
 			class init {};
 			class provideCurrentLoadout {};
-			class saveCampaign {};
 			class provideDefaultLoadout {};
 			class saveAllKitsAndVaults {};
 			class saveToPreviousInventorys {};
 			class saveToCurrentInventory {};
+			class createPlayerProfile {};
 		};
 		class personalVault
 		{
@@ -21,6 +21,11 @@ class CfgFunctions
 			class closePersonalVault {};
 			class clientToldToOpenPersonalVault {};
 			class accessPersonalVault {};
+		};
+		class eden
+		{
+			file = "macp_core\edenFunctions";
+			class edenInit {};
 		};
 	};
 };

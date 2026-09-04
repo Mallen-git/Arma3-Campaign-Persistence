@@ -1,24 +1,79 @@
+params [
+	["_mode", "", [""]],
+	["_input", [], [[]]]
+];
+
+if (_mode isNotEqualTo "init") exitWith {_this call macp_core_fnc_edenInit;};
+
+_input params [
+	["_logic", objNull, [objNull]]
+];
+
 if (isServer) then {
-	_allCampaignData = profileNamespace getVariable ["macp_allCampaignData", createHashMap];
+	_allCampaignData = profileNamespace getVariable ["macp_serverAllCampaignData", createHashMap];
 
-	_currentCampaignKey = missionNamespace getVariable ["macp_campaignKey", "MACPDEFAULT"];
-	_currentCampaignData = _allCampaignData getOrDefault [_currentCampaignKey, "NONEFOUND", false];
+	_rawCampaignData = _logic getVariable ["macp_campaignData", "NONEFOUND"];
 
-	if (_currentCampaignData isEqualTo "NONEFOUND") then
-	{
-		//new campaign! lets run setup to set default kit
-		_currentCampaignData = createHashMapFromArray [
-			["players", createHashMap],
-			["defaultKit", [[],[],[],[],[],[],"","",[],["","","","","",""]]]
-		];
+	if (_rawCampaignData isEqualTo "NONEFOUND") exitWith {diag_log (text "MACP - ERROR: No raw campaign data found, persistance is not active")};
+
+	//campaign data format:
+	/*
+		"key" - String
+		"players" - Hashmap
+			playerUID - Hashmap
+				"lastUsedName" - String
+				"currentInventory" - Loadout Array
+				"previousInventorys" - Hashmap
+					dateTime - Loadout Array
+				"personalVault" - Array
+		"defaultKit" - Loadout Array
+	*/
+
+	//key identifys a hashmap, value identifys if hashmap values are also hashmaps
+	_hashmapIdentifiers = createHashMapFromArray [["players", true], ["previousInventorys", false]];
+
+	//load and validate data
+	//array should have been validated at edeneditor save, this is a safe operation
+	_arraydCampaignData = parseSimpleArray _rawCampaignData;
+
+	_currentCampaignData = createHashMapFromArray _arraydCampaignData;
+
+	_investigateHashMap = {
+		params["_investigateHashMap", "_hashmapIdentifiers", "_workingHashMap", "_allHashmaps"];
+
+		{
+			_key = _x;
+			_value = _y;
+
+			if (_key in _hashmapIdentifiers or _allHashmaps) then
+			{
+				_newHashmap = createHashMapFromArray _value;
+				_childrenHashmaps = _hashmapIdentifiers getOrDefault [_key, false];
+				_workingHashMap set [_key, _newHashmap];
+				[_investigateHashMap, _hashmapIdentifiers, _newHashmap, _childrenHashmaps] call _investigateHashMap;
+			};
+		} forEach _workingHashMap;
 	};
 
+	[_investigateHashMap, _hashmapIdentifiers, _currentCampaignData, false] call _investigateHashMap;
+
 	macp_currentCampaignData = _currentCampaignData;
+
+	_key = macp_currentCampaignData get "key";
+	_autosavedCampaignData = _allCampaignData getOrDefault [_key, macp_currentCampaignData];
+
+	if (_autosavedCampaignData isNotEqualTo macp_currentCampaignData) then
+	{
+		_allCampaignData set [(_key + ".backup"), _autosavedCampaignData];
+	};
+
+	_allCampaignData set [_key, macp_currentCampaignData];
 
 	macp_personalVaultLists = createHashMap;
 
 	addMissionEventHandler ["Ended", {
 		call macp_core_fnc_saveAllKitsAndVaults;
+		publicVariable "macp_currentCampaignData";
 	}];
 
 	addMissionEventHandler ["HandleDisconnect", {
@@ -29,13 +84,19 @@ if (isServer) then {
 	}];
 
 	//autosave every 30s
-	[{call macp_core_fnc_saveAllKitsAndVaults;}, 30] call CBA_fnc_addPerFrameHandler;
+	[{
+		call macp_core_fnc_saveAllKitsAndVaults;
+		publicVariable "macp_currentCampaignData";
+	}, 30] call CBA_fnc_addPerFrameHandler;
 };
 
 //if not the server don't need to pickup loadouts
 if (not hasInterface) exitWith {};
 
 mcap_initialRespawn = false;
+
+//create player profile if it doesn't exist
+[[getPlayerUID player], macp_core_fnc_createPlayerProfile] remoteExec ['call', 2];
 
 //request server to give me loadout i should have
 [[getPlayerUID player], macp_core_fnc_provideCurrentLoadout] remoteExec ['call', 2];
@@ -55,6 +116,7 @@ _statement =
 _action = ["openPersonalVault", "Open Personal Vault", "", _statement, _condition] call ace_interact_menu_fnc_createAction;
 [player, 1, ["ACE_SelfActions"], _action] call ace_interact_menu_fnc_addActionToObject;
 
+//set kit to default on respawn
 player addEventHandler ["Respawn", {
 	params ["_unit", "_corpse"];
 	if (mcap_initialRespawn) then
@@ -66,6 +128,7 @@ player addEventHandler ["Respawn", {
 	};
 }];
 
+//save kit to previous inventorys when killed
 player addEventHandler ["Killed", {
 	params ["_unit", "_killer", "_instigator", "_useEffects", "_shot", "_real"];
 	if (time > 2) then
@@ -75,3 +138,16 @@ player addEventHandler ["Killed", {
 		mcap_initialRespawn = true;
 	};
 }];
+
+"macp_currentCampaignData" addPublicVariableEventHandler {
+	_value = _this select 1;
+
+	//if player is admin save the data, it is presumed data will always want to be saved if you're the admin
+	_admin = call BIS_fnc_admin;
+	if (_admin isEqualTo 0) exitWith {};
+
+	_allCampaignData = profileNamespace getVariable ["macp_clientAllCampaignData", createHashMap];
+	_key = _value get "key";
+	_allCampaignData set [_key, _value];
+	saveProfileNamespace;
+};

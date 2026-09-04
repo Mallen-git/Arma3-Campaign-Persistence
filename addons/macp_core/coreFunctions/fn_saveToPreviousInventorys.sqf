@@ -34,20 +34,14 @@ if (isNull _requestedUIDUnit) exitWith {diag_log (text "MACP - ERROR: Requested 
 
 _inventoryToStore = getUnitLoadout _requestedUIDUnit;
 
-_defaultKit = macp_currentCampaignData getOrDefault ["defaultKit", [[],[],[],[],[],[],"","",[],["","","","","",""]], true];
-
 //get players profile
-_allPlayerProfiles = macp_currentCampaignData getOrDefault ["players", createHashMap, true];
-_playerProfile = _allPlayerProfiles getOrDefault [_requestedUID, createHashMapFromArray [["currentInventory", _defaultKit], ["previousInventorys", createHashMap], ["personalVault", [[],[],[],[]]]], true];
+_allPlayerProfiles = macp_currentCampaignData get "players";
+_playerProfile = _allPlayerProfiles get _requestedUID;
 
 //store corpse loadout in previous deaths
 _currentTimestamp = systemTimeUTC;
-_previousInventorys = _playerProfile getOrDefault ["previousInventorys", createHashMap];
+_previousInventorys = _playerProfile get "previousInventorys";
 _previousInventorys set [_currentTimestamp, [_storageReason, _inventoryToStore]];
 
-//clean up and save any defaults that were set
-_playerProfile set ["previousInventorys", _previousInventorys];
-_allPlayerProfiles set [_requestedUID, _playerProfile];
-macp_currentCampaignData set ["players", _allPlayerProfiles];
-[] call macp_core_fnc_saveCampaign;
+saveProfileNamespace;
 

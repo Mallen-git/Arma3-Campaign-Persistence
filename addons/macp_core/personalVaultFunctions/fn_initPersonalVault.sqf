@@ -24,12 +24,10 @@ _existingVault = macp_personalVaultLists getOrDefault [_requestedUID, objNull];
 
 if (not isNull _existingVault) exitWith {};
 
-_defaultKit = macp_currentCampaignData getOrDefault ["defaultKit", [[],[],[],[],[],[],"","",[],["","","","","",""]], true];
-
 //get players profile
-_allPlayerProfiles = macp_currentCampaignData getOrDefault ["players", createHashMap, true];
-_playerProfile = _allPlayerProfiles getOrDefault [_requestedUID, createHashMapFromArray [["currentInventory", _defaultKit], ["previousInventorys", createHashMap], ["personalVault", [[],[],[],[]]]], true];
-_personalVault = _playerProfile getOrDefault ["personalVault", [[],[],[],[]], true];
+_allPlayerProfiles = macp_currentCampaignData get "players";
+_playerProfile = _allPlayerProfiles get _requestedUID;
+_personalVault = _playerProfile get "personalVault";
 
 _personalVault params ["_containers", "_weapons", "_mags", "_items"];
 
@@ -37,14 +35,7 @@ _vault = createVehicle ["VirtualReammoBox_F", [10,0,0], [], 0, "CAN_COLLIDE"];
 _vault hideObjectGlobal true;
 _vault allowDamage false;
 
-
-//_containers = [["B_Bergen_mcamo_F", [[/*weapons*/], [/*mags*/], [/*items*/]]],    ["B_Bergen_mcamo_F", [[/*weapons*/], [/*mags*/], [/*items*/]]]];
-//_weapons = [["arifle_ARX_blk_F","ACE_muzzle_mzls_H","ACE_DBAL_A3_Green","optic_DMS",["30Rnd_65x39_caseless_green",30],["10Rnd_50BW_Mag_F",10],"bipod_02_F_arid"], ["arifle_ARX_blk_F","ACE_muzzle_mzls_H","ACE_DBAL_A3_Green","optic_DMS",["30Rnd_65x39_caseless_green",30],["10Rnd_50BW_Mag_F",10],"bipod_02_F_arid"]];
-//_mags = [["30Rnd_65x39_caseless_mag",30],  ["30Rnd_65x39_caseless_mag",30],  ["Chemlight_green",1]];
-//_items = ["ItemGPS","ItemRadio","ItemCompass"];
 //fill vault
-
-
 {
 	_container = _x select 0;
 	_vault addBackpackCargoGlobal [_container, 1];
@@ -90,8 +81,3 @@ _vault enableSimulationGlobal false;
 
 //vault is full, set for later
 macp_personalVaultLists set [_requestedUID, _vault];
-
-//clean up and save any defaults that were set
-_allPlayerProfiles set [_requestedUID, _playerProfile];
-macp_currentCampaignData set ["players", _allPlayerProfiles];
-[] call macp_core_fnc_saveCampaign;

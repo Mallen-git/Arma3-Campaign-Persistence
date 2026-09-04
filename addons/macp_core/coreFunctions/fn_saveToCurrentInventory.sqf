@@ -33,15 +33,10 @@ if (isNull _requestedUIDUnit) exitWith {diag_log (text "MACP - ERROR: Requested 
 
 _inventoryToStore = getUnitLoadout _requestedUIDUnit;
 
-_defaultKit = macp_currentCampaignData getOrDefault ["defaultKit", [[],[],[],[],[],[],"","",[],["","","","","",""]], true];
-
 //get players profile
-_allPlayerProfiles = macp_currentCampaignData getOrDefault ["players", createHashMap, true];
-_playerProfile = _allPlayerProfiles getOrDefault [_requestedUID, createHashMapFromArray [["currentInventory", _defaultKit], ["previousInventorys", createHashMap], ["personalVault", [[],[],[],[]]]], true];
+_allPlayerProfiles = macp_currentCampaignData get "players";
+_playerProfile = _allPlayerProfiles get _requestedUID;
 
-_currentInventory = _playerProfile set ["currentInventory", _inventoryToStore, true];
+_currentInventory = _playerProfile set ["currentInventory", _inventoryToStore];
 
-//clean up and save any defaults that were set
-_allPlayerProfiles set [_requestedUID, _playerProfile];
-macp_currentCampaignData set ["players", _allPlayerProfiles];
-[] call macp_core_fnc_saveCampaign;
+saveProfileNamespace;
