@@ -1,11 +1,4 @@
 params [
-	["_mode", "", [""]],
-	["_input", [], [[]]]
-];
-
-if (_mode isNotEqualTo "init") exitWith {_this call macp_core_fnc_edenInit;};
-
-_input params [
 	["_logic", objNull, [objNull]]
 ];
 
@@ -87,7 +80,16 @@ if (isServer) then {
 	[{
 		call macp_core_fnc_saveAllKitsAndVaults;
 		publicVariable "macp_currentCampaignData";
+		saveProfileNamespace;
 	}, 30] call CBA_fnc_addPerFrameHandler;
+
+	//if player is server then autosave isn't needed, simply link the data correctly and go from there
+	if (hasInterface) then
+	{
+		_allCampaignData = profileNamespace getVariable ["macp_clientAllCampaignData", createHashMap];
+		_allCampaignData set [_key, macp_currentCampaignData];
+		saveProfileNamespace;
+	};
 };
 
 //if not the server don't need to pickup loadouts
