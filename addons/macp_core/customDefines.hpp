@@ -1,0 +1,3 @@
+#define CTRL_DEFAULT_H (ATTRIBUTE_CONTENT_H * GRID_H)
+#define WINDOW_TOPAbs (0.5 - WINDOW_HAbs * 0.5 + CTRL_DEFAULT_H)
+#define WINDOW_W_WIDE (0.5 * ((safeZoneW / GRID_W - 10) min 400))

@@ -25,7 +25,9 @@ class CfgFunctions
 		class eden
 		{
 			file = "macp_core\edenFunctions";
-			class edenInit {};
+			class openCampaignManager {};
+			class createPreviewCam {};
+			class destroyPreviewCam {};
 		};
 	};
 };

@@ -1,9 +1,3 @@
-#include "\a3\3DEN\UI\macros.inc"
-
-// Inherit base classes
-class ctrlCombo;
-class ctrlEdit;
-
 class Cfg3DEN
 {
 	class Attributes
