@@ -13,6 +13,11 @@ class CfgFunctions
 			class saveToCurrentInventory {};
 			class createPlayerProfile {};
 		};
+		class codeHelpers
+		{
+			file = "macp_core\codeHelpers";
+			class investigateHashmap {};
+		};
 		class personalVault
 		{
 			file = "macp_core\personalVaultFunctions";
@@ -28,6 +33,11 @@ class CfgFunctions
 			class openCampaignManager {};
 			class createPreviewCam {};
 			class destroyPreviewCam {};
+			class updateFileBrowser {};
+			class updateFilePath {};
+			class buttonDeletePressed {};
+			class buttonEditPressed {};
+			class buttonNewPressed {};
 		};
 	};
 };

@@ -31,24 +31,7 @@ if (isServer) then {
 
 	_currentCampaignData = createHashMapFromArray _arraydCampaignData;
 
-	_investigateHashMap = {
-		params["_investigateHashMap", "_hashmapIdentifiers", "_workingHashMap", "_allHashmaps"];
-
-		{
-			_key = _x;
-			_value = _y;
-
-			if (_key in _hashmapIdentifiers or _allHashmaps) then
-			{
-				_newHashmap = createHashMapFromArray _value;
-				_childrenHashmaps = _hashmapIdentifiers getOrDefault [_key, false];
-				_workingHashMap set [_key, _newHashmap];
-				[_investigateHashMap, _hashmapIdentifiers, _newHashmap, _childrenHashmaps] call _investigateHashMap;
-			};
-		} forEach _workingHashMap;
-	};
-
-	[_investigateHashMap, _hashmapIdentifiers, _currentCampaignData, false] call _investigateHashMap;
+	[_hashmapIdentifiers, _currentCampaignData, false] call macp_core_fnc_investigateHashmap;
 
 	macp_currentCampaignData = _currentCampaignData;
 

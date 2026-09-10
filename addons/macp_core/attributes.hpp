@@ -2,15 +2,14 @@ class Cfg3DEN
 {
 	class Attributes
 	{
-		class Default;
-		class Title: Default {
-			class Controls {
-				class Title;
-			};
+		class EditMulti3;
+		class EditMulti5: EditMulti3
+		{
+			class Controls;
 		};
-		class EditCodeMulti5: Title {
+		class EditCodeMulti5: EditMulti5 {
 			class Controls: Controls {
-				class Title: Title {};
+				class Title;
 				class Background;
 				class Value;
 			};

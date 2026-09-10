@@ -34,7 +34,7 @@ class CfgVehicles
 		isGlobal = 1;						// 0 for server only execution, 1 for global execution, 2 for persistent global execution
 		isTriggerActivated = 1;				// 1 for module waiting until all synced triggers are activated
 		isDisposable = 1;					// 1 if modules is to be disabled once it is activated (i.e. repeated trigger activation will not work)
-		is3DEN = 1;							// 1 to run init function in Eden Editor as well
+		is3DEN = 0;							// 1 to run init function in Eden Editor as well
 
 		class Attributes : AttributesBase
 		{
