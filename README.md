@@ -10,25 +10,24 @@ MACP is a system that automatically tracks players inventories and their loot ac
 
 ## USAGE
 
-To start place down a "Campaign Manager" Module, then fill in the Campaign key to be used across missions, from then on all systems will be online
+To start, open the "MACP Campaign Manager" Tool, create a new campaign with a custom key, edit the default kit to be something you like, then place a "MACP - Campaign Manager" module, and finally in its attributes select the campaign you just created!
 
 ## FEATURES
 
 MACP includes the following features currently:
 
-- Automatic kit saving which persists between missions and gracfully handles mission ending, client crashes, and even server crashes!
-- Customisable default kit for new players and players respawning
+- Automatic kit saving which persists between missions and gracefully handles mission ending, client crashes, and even server crashes!
+- Customizable default kit for new players and players re-spawning
 - Personal private vault for each person to store loot without risking it in battle
 - Kit snapshots on death and disconnect allowing rollbacks in case someone got Arma'd
+- Comprehensive campaign management tool allowing easy and intuitive management of campaigns
 
 With planned features such as:
 
 - Admin Tools
 	- Live access to player vaults
-	- Player Kit rollback and snapshot inspection
-	- Offline Kit and Vault Management
-- Restriction areas for personal vaults
-- Comprehensive campaign data management system
+	- Live player Kit rollback
+	- Offline Vault Management
 - CBA settings for customisation
 - Shared campaign vault
 - Money tracking
