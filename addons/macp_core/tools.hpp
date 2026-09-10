@@ -14,7 +14,7 @@ class display3DEN
 				class macp_campaignManagerTool
 				{
 					text = "MACP Campaign Manager"; // Item text
-					picture = ""; // Item picture
+					picture = "\a3\ui_f\data\igui\cfg\simpletasks\types\box_ca.paa"; // Item picture
 					action = "[] call macp_core_fnc_openCampaignManager;"; // Expression called upon clicking; ideally, it should call your custom function
 					opensNewWindow = 1;// Adds '...' to the name of the menu entry, indicating the user that a new window will be opened.
 				};

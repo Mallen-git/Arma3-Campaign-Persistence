@@ -17,7 +17,7 @@ params [["_display", displayNull, [displayNull]]];
 
 if (isNull _display) exitWith {};
 
-_displayNames = createHashMapFromArray [["key", "Campaign Key"], ["players", "Players"], ["defaultKit", "Default Kit"], ["previousInventorys", "Previous Inventorys"], ["currentInventory", "Current Inventory"], ["lastUsedName", "Last Used Name"], ["personalVault", "Personal Vault"]];
+_displayNames = createHashMapFromArray [["key", "Campaign Key"], ["players", "Players"], ["defaultKit", "Default Kit"], ["previousInventorys", "Previous Inventorys"], ["previousInventory", "Previous Inventory"], ["storageReason", "Storage Reason"], ["currentInventory", "Current Inventory"], ["lastUsedName", "Last Used Name"], ["personalVault", "Personal Vault"]];
 
 _listBox = _display displayCtrl 1500;
 _filePathText = _display displayCtrl 1002;
@@ -38,11 +38,6 @@ _playerUIDNext = false;
 	if (_playerUIDNext) then
 	{
 		_displayName = (_workingHashMap get "lastUsedName") + " (" + _x + ")";
-	};
-
-	if (typeName _y isEqualTo "HASHMAP") then
-	{
-		_displayName = _displayName + "...";
 	};
 
 	_outputText = _outputText + _displayName + ' >> ';
@@ -79,10 +74,16 @@ lbClear _listBox;
 
 _listBox lbSetCurSel -1;
 
+_allowNew = false;
+if (_filePath isEqualTo []) then
+{
+	_allowNew = true;
+};
+
 _buttonDelete = _display displayCtrl 2402;
 _buttonNew = _display displayCtrl 2403;
 _buttonEdit = _display displayCtrl 2404;
 
 _buttonDelete ctrlEnable false;
-_buttonNew ctrlEnable false;
+_buttonNew ctrlEnable _allowNew;
 _buttonEdit ctrlEnable false;

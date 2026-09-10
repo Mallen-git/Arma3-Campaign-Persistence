@@ -18,7 +18,7 @@ params [["_customFilePath", objNull, [[]]]];
 
 _display = (findDisplay 313) createDisplay "macp_campaignManagerToolDialog";
 
-if (not isNull _customFilePath) then
+if (_customFilePath isNotEqualTo objNull) then
 {
 	_display setVariable ['macp_filePath', _customFilePath];
 };

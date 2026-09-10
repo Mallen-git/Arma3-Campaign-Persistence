@@ -35,7 +35,7 @@ _workingHashmap = _allCampaignData;
 	_workingHashmap = _workingHashmap get _x;
 } forEach _filePath;
 
-_arsenalItems = ["currentInventory", "defaultKit"];
+_arsenalItems = ["currentInventory", "defaultKit", "previousInventory"];
 
 if (_selData in _arsenalItems) then
 {
@@ -64,13 +64,15 @@ if (_selData in _arsenalItems) then
 
 	_ehID = ["ace_arsenal_displayClosed", {macp_arsenalClosed = true;}] call CBA_fnc_addEventHandler;
 
-	[_ehID, _value] spawn
+	[_ehID, _workingHashmap, _selData, _filePath] spawn
 	{
-		params["_ehID"];
+		params["_ehID", "_workingHashmap", "_selData", "_filePath"];
 
 		waitUntil {macp_arsenalClosed};
 
-		test = getUnitLoadout macp_dummy;
+		_unitLoadout = getUnitLoadout macp_dummy;
+
+		_workingHashMap set [_selData, _unitLoadout];
 
 		ignore3DENHistory {
 			delete3DENEntities [macp_dummy];
@@ -79,6 +81,8 @@ if (_selData in _arsenalItems) then
 		["ace_arsenal_displayClosed", _ehID] call CBA_fnc_removeEventHandler;
 		macp_arsenalClosed = nil;
 		macp_dummy = nil;
+
+		[_filePath] call macp_core_fnc_openCampaignManager;
 	};
 
 } else {

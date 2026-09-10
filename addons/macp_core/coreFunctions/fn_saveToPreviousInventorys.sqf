@@ -16,7 +16,7 @@
 		["123456789", "DEATH"] call macp_core_fnc_saveToPreviousInventorys;
 */
 
-params [["_requestedUID", "NOTSUPPLIED", [""]], ["_storageReason", "DEATH", [""]], ["_overideUnit", objNull, [objNull]]];
+params [["_requestedUID", "NOTSUPPLIED", [""]], ["_storageReason", "UNKNOWN", [""]], ["_overideUnit", objNull, [objNull]]];
 
 if (not isServer) exitWith {diag_log (text "MACP - ERROR: macp_core_fnc_saveToPreviousInventorys ran on client, not server")};
 
@@ -34,14 +34,34 @@ if (isNull _requestedUIDUnit) exitWith {diag_log (text "MACP - ERROR: Requested 
 
 _inventoryToStore = getUnitLoadout _requestedUIDUnit;
 
+//get players weapons that fly off them on death
+if (_storageReason isEqualTo "DEATH") then
+{
+	_weaponHolders = getCorpseWeaponholders _requestedUIDUnit;
+	_weaponHolders params ["_primaryWeaponHolder", "_secondaryWeaponHolder"];
+	if (not isNull _primaryWeaponHolder) then
+	{
+		_primaryWeaponHolderWeapons = weaponsItemsCargo _primaryWeaponHolder;
+		_inventoryToStore set [0, (_primaryWeaponHolderWeapons select 0)];
+	};
+	if (not isNull _secondaryWeaponHolder) then
+	{
+		_secondaryWeaponHolderWeapons = weaponsItemsCargo _secondaryWeaponHolder;
+		_inventoryToStore set [1, (_secondaryWeaponHolderWeapons select 0)];
+	};
+};
+
 //get players profile
 _allPlayerProfiles = macp_currentCampaignData get "players";
 _playerProfile = _allPlayerProfiles get _requestedUID;
 
 //store corpse loadout in previous deaths
-_currentTimestamp = systemTimeUTC;
+_data = ["%4:%5:%6, %3-%2-%1"];
+_data append systemTimeUTC;
+
+_currentTimestamp = format _data;
 _previousInventorys = _playerProfile get "previousInventorys";
-_previousInventorys set [_currentTimestamp, [_storageReason, _inventoryToStore]];
+_previousInventorys set [_currentTimestamp, createHashMapFromArray [["storageReason", _storageReason], ["previousInventory", _inventoryToStore]]];
 
 saveProfileNamespace;
 

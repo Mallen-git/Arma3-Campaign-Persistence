@@ -59,12 +59,14 @@ if (isServer) then {
 		false;
 	}];
 
-	//autosave every 30s
+	//autosave every 30s after 5 seconds of grace at mission start (so we don't accidentally save the editor kit)
 	[{
-		call macp_core_fnc_saveAllKitsAndVaults;
-		publicVariable "macp_currentCampaignData";
-		saveProfileNamespace;
-	}, 30] call CBA_fnc_addPerFrameHandler;
+		[{
+			call macp_core_fnc_saveAllKitsAndVaults;
+			publicVariable "macp_currentCampaignData";
+			saveProfileNamespace;
+		}, 30] call CBA_fnc_addPerFrameHandler;
+	}, [], 4.2649] call CBA_fnc_waitAndExecute;
 
 	//if player is server then autosave isn't needed, simply link the data correctly and go from there
 	if (hasInterface) then
@@ -92,13 +94,35 @@ mcap_initialRespawn = false;
 //add ace interaction to open Personal Vault
 _condition =
 {
-  ([_player, _target, []] call ace_common_fnc_canInteractWith) and (isNull objectParent player)
+	_result = false;
+	if (isNil "macp_restrictPersonalVaultAreas") then
+	{
+		_result = true;
+	} else {
+		{
+			_area = _x getVariable ["objectArea",[0,0,0,false,0]];
+			//x,y,rot,whether its a rectangle,z
+
+			_areaPos = getPosASL _x;
+			_areaPos = ASLToAGL _areaPos;
+
+			_playerPos = getPosASL _player;
+			_playerPos = ASLToAGL _playerPos;
+			_arguments = [_areaPos];
+			_arguments append _area;
+			if (_playerPos inArea _arguments) then
+			{
+				_result = true;
+			}
+		} forEach macp_restrictPersonalVaultAreas;
+	};
+  ([_player, _target, []] call ace_common_fnc_canInteractWith) and (isNull objectParent _player) and (_result)
 };
 _statement =
 {
   [[getPlayerUID player], macp_core_fnc_accessPersonalVault] remoteExec ['call', 2];
 };
-_action = ["openPersonalVault", "Open Personal Vault", "", _statement, _condition] call ace_interact_menu_fnc_createAction;
+_action = ["openPersonalVault", "Open Personal Vault", "\a3\ui_f\data\igui\cfg\simpletasks\types\Container_ca.paa", _statement, _condition] call ace_interact_menu_fnc_createAction;
 [player, 1, ["ACE_SelfActions"], _action] call ace_interact_menu_fnc_addActionToObject;
 
 //set kit to default on respawn
@@ -118,7 +142,10 @@ player addEventHandler ["Killed", {
 	params ["_unit", "_killer", "_instigator", "_useEffects", "_shot", "_real"];
 	if (time > 2) then
 	{
-		[[getPlayerUID player, "DEATH"], macp_core_fnc_saveToPreviousInventorys] remoteExec ['call', 2];
+		[{
+			params ["_unit"];
+			[[getPlayerUID player, "DEATH", _unit], macp_core_fnc_saveToPreviousInventorys] remoteExec ['call', 2];
+		}, [_unit], 0.1] call CBA_fnc_waitAndExecute;
 	} else {
 		mcap_initialRespawn = true;
 	};

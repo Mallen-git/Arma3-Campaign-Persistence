@@ -17,9 +17,9 @@
 params [["_display", displayNull, [displayNull]], ["_selectedItem", "", [""]]];
 if (isNull _display) exitWith {};
 
-_displayNames = createHashMapFromArray [["key", "Campaign Key"], ["players", "Players"], ["defaultKit", "Default Kit"], ["previousInventorys", "Previous Inventorys"], ["currentInventory", "Current Inventory"], ["lastUsedName", "Last Used Name"], ["personalVault", "Personal Vault"]];
-_availableOptionsPerItem = createHashMapFromArray [["key", [false, false, true]], ["players", [false, false, true]], ["defaultKit", [false, false, true]], ["previousInventorys", [false, false, true]], ["currentInventory", [false, true, true]], ["lastUsedName", [false, false, false]], ["personalVault", [false, true, true]]];
-_availableOptionsPerFolder = createHashMapFromArray [["root", [true, true, true]], ["players", [true, true, true]], ["previousInventorys", [true, true, true]]];
+_displayNames = createHashMapFromArray [["key", "Campaign Key"], ["players", "Players"], ["defaultKit", "Default Kit"], ["previousInventorys", "Previous Inventorys"], ["previousInventory", "Previous Inventory"], ["storageReason", "Storage Reason"], ["currentInventory", "Current Inventory"], ["lastUsedName", "Last Used Name"], ["personalVault", "Personal Vault"]];
+_availableOptionsPerItem = createHashMapFromArray [["key", [false, false, true]], ["players", [false, false, true]], ["defaultKit", [false, false, true]], ["previousInventorys", [false, false, true]], ["previousInventory", [false, false, true]], ["storageReason", [false, false, true]], ["currentInventory", [false, true, true]], ["lastUsedName", [false, false, false]], ["personalVault", [false, true, true]]];
+_availableOptionsPerFolder = createHashMapFromArray [["root", [true, true, true]], ["players", [false, true, true]], ["previousInventorys", [false, true, true]]];
 
 _listBox = _display displayCtrl 1500;
 _filePathText = _display displayCtrl 1002;
@@ -42,11 +42,6 @@ _playerUIDNext = false;
 	if (_playerUIDNext) then
 	{
 		_displayName = (_workingHashMap get "lastUsedName") + " (" + _x + ")";
-	};
-
-	if (typeName _y isEqualTo "HASHMAP") then
-	{
-		_displayName = _displayName + "...";
 	};
 
 	_outputText = _outputText + _displayName + ' >> ';
