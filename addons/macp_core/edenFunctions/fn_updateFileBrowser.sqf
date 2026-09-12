@@ -17,7 +17,7 @@ params [["_display", displayNull, [displayNull]]];
 
 if (isNull _display) exitWith {};
 
-_displayNames = createHashMapFromArray [["key", "Campaign Key"], ["players", "Players"], ["defaultKit", "Default Kit"], ["previousInventorys", "Previous Inventorys"], ["previousInventory", "Previous Inventory"], ["storageReason", "Storage Reason"], ["currentInventory", "Current Inventory"], ["lastUsedName", "Last Used Name"], ["personalVault", "Personal Vault"]];
+_displayNames = createHashMapFromArray [["key", "Campaign Key"], ["players", "Players"], ["defaultKit", "Default Kit"], ["ver", "Save Version"], ["previousInventorys", "Previous Inventorys"], ["previousInventory", "Previous Inventory"], ["storageReason", "Storage Reason"], ["currentInventory", "Current Inventory"], ["lastUsedName", "Last Used Name"], ["personalVault", "Personal Vault"]];
 
 _listBox = _display displayCtrl 1500;
 _filePathText = _display displayCtrl 1002;

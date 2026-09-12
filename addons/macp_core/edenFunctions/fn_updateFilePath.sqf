@@ -17,8 +17,8 @@
 params [["_display", displayNull, [displayNull]], ["_selectedItem", "", [""]]];
 if (isNull _display) exitWith {};
 
-_displayNames = createHashMapFromArray [["key", "Campaign Key"], ["players", "Players"], ["defaultKit", "Default Kit"], ["previousInventorys", "Previous Inventorys"], ["previousInventory", "Previous Inventory"], ["storageReason", "Storage Reason"], ["currentInventory", "Current Inventory"], ["lastUsedName", "Last Used Name"], ["personalVault", "Personal Vault"]];
-_availableOptionsPerItem = createHashMapFromArray [["key", [false, false, true]], ["players", [false, false, true]], ["defaultKit", [false, false, true]], ["previousInventorys", [false, false, true]], ["previousInventory", [false, false, true]], ["storageReason", [false, false, true]], ["currentInventory", [false, true, true]], ["lastUsedName", [false, false, false]], ["personalVault", [false, true, true]]];
+_displayNames = createHashMapFromArray [["key", "Campaign Key"], ["players", "Players"], ["defaultKit", "Default Kit"], ["ver", "Save Version"], ["previousInventorys", "Previous Inventorys"], ["previousInventory", "Previous Inventory"], ["storageReason", "Storage Reason"], ["currentInventory", "Current Inventory"], ["lastUsedName", "Last Used Name"], ["personalVault", "Personal Vault"]];
+_availableOptionsPerItem = createHashMapFromArray [["key", [false, false, true]], ["players", [false, false, true]], ["defaultKit", [false, false, true]], ["ver", [false, false, false]], ["previousInventorys", [false, false, true]], ["previousInventory", [false, false, true]], ["storageReason", [false, false, true]], ["currentInventory", [false, true, true]], ["lastUsedName", [false, false, false]], ["personalVault", [false, true, true]]];
 _availableOptionsPerFolder = createHashMapFromArray [["root", [true, true, true]], ["players", [false, true, true]], ["previousInventorys", [false, true, true]]];
 
 _listBox = _display displayCtrl 1500;
