@@ -52,6 +52,7 @@ switch (_workingDirName) do
 			_text = ctrlText _text;
 			if (_text isEqualTo "") exitWith {};
 			_allCampaignData = profileNamespace getVariable ["macp_clientAllCampaignData", createHashMap];
+			profileNamespace setVariable ["macp_clientAllCampaignData", _allCampaignData];
 			_allCampaignData set [_text, createHashMapFromArray [["key", _text], ["players", createHashMap], ["defaultKit", [[],[],[],[],[],[],"","",[],["","","","","",""]]], ["ver", [1,0,1]]]];
 			saveProfileNamespace;
 
