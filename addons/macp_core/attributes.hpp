@@ -17,7 +17,7 @@ class Cfg3DEN
 		// Your attribute class
 		class MACP_comboCampaignKey : EditCodeMulti5
 		{
-			attributeLoad = "_usedValue = _value;if (not (_value isEqualType createHashMap)) then {_usedValue = createHashMap;};(_this controlsGroupCtrl 100) ctrlSetText (str _usedValue);(_this controlsGroupCtrl 100) ctrlEnable false;_ctrlCombo = _this controlsGroupCtrl 659;_currentKey = _usedValue getOrDefault ['key', 'NOKEYFOUNDRIP'];_allCampaignData = profileNamespace getVariable ['macp_clientAllCampaignData', createHashMap];_selNotSet = true;_emptyCampaignData = true;{	_emptyCampaignData = false;	_lbadd = _ctrlCombo lbadd (str(_forEachIndex + 1)+ ': ' + _x);	_ctrlCombo lbsetdata [_lbadd, _x];	_testingKey = _y getOrDefault ['key', 'NOKEYFOUNDDOUBLERIP'];	if (_testingKey isEqualTo _currentKey) then	{		_ctrlCombo lbsetcursel _lbadd;		_selNotSet = false;	};} foreach _allCampaignData;if (_emptyCampaignData) then{	_lbadd = _ctrlCombo lbadd 'No Campaigns Found';	_ctrlCombo lbsetdata [_lbadd, 'NOCAMPAIGNSFOUNDRIP'];	_ctrlCombo lbsetcursel _lbadd;	(_this controlsGroupCtrl 100) ctrlSetText 'Create a campaign in the MACP Campaign Manager tool at the top of Eden Editor under Tools...';};";
+			attributeLoad = "_usedValue = _value;if (not (_value isEqualType createHashMap)) then {_usedValue = createHashMap;};(_this controlsGroupCtrl 100) ctrlSetText (str _usedValue);_ctrlCombo = _this controlsGroupCtrl 659;_currentKey = _usedValue getOrDefault ['key', 'NOKEYFOUNDRIP'];_allCampaignData = profileNamespace getVariable ['macp_clientAllCampaignData', createHashMap];_selNotSet = true;_emptyCampaignData = true;{	_emptyCampaignData = false;	_lbadd = _ctrlCombo lbadd (str(_forEachIndex + 1)+ ': ' + _x);	_ctrlCombo lbsetdata [_lbadd, _x];	_testingKey = _y getOrDefault ['key', 'NOKEYFOUNDDOUBLERIP'];	if (_testingKey isEqualTo _currentKey) then	{		_ctrlCombo lbsetcursel _lbadd;		_selNotSet = false;	};} foreach _allCampaignData;if (_emptyCampaignData) then{	_lbadd = _ctrlCombo lbadd 'No Campaigns Found';	_ctrlCombo lbsetdata [_lbadd, 'NOCAMPAIGNSFOUNDRIP'];	_ctrlCombo lbsetcursel _lbadd;	(_this controlsGroupCtrl 100) ctrlSetText 'Create a campaign in the MACP Campaign Manager tool at the top of Eden Editor under Tools...';};";
 			attributeSave = "_ctrlCombo = _this controlsGroupCtrl 659;_curSel = lbCurSel _ctrlCombo;_key = _ctrlCombo lbdata _curSel;_allCampaignData = profileNamespace getVariable ['macp_clientAllCampaignData', createHashMap];_allCampaignData getOrDefault [_key, 'NOCAMPAIGNSFOUNDRIP'];";
 
 			h = "6.4 * 	5 * (pixelH * pixelGrid * 	0.50)";
@@ -36,6 +36,7 @@ class Cfg3DEN
 				{
 					//no autocomplete as i'm handeling it from here out
 					y = "2.4 * 	5 * (pixelH * pixelGrid * 	0.50)";
+					canModify = 0;
 				};
 				class Combo : ctrlCombo
 				{
