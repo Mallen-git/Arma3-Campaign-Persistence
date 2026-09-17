@@ -39,6 +39,7 @@ class CfgFunctions
 			class buttonEditPressed {};
 			class buttonNewPressed {};
 			class restrictPersonalVaultModule {};
+			class updateModuleAttributes {};
 		};
 	};
 };

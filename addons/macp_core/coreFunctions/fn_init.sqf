@@ -5,9 +5,17 @@ params [
 if (isServer) then {
 	_allCampaignData = profileNamespace getVariable ["macp_serverAllCampaignData", createHashMap];
 
-	_rawCampaignData = _logic getVariable ["macp_campaignData", "NONEFOUND"];
+	_rawCampaignData = _logic getVariable ["macp_campaignData", "NOCAMPAIGNSFOUNDRIP"];
 
-	if (_rawCampaignData isEqualTo "NONEFOUND") exitWith {diag_log (text "MACP - ERROR: No raw campaign data found, persistance is not active")};
+	if (_rawCampaignData isEqualTo "NOCAMPAIGNSFOUNDRIP") exitWith
+	{
+		diag_log (text "MACP - ERROR: No raw campaign data found, persistance is not active");
+		macp_failedInit = true;
+		publicVariable "macp_failedInit";
+	};
+
+	macp_failedInit = false;
+	publicVariable "macp_failedInit";
 
 	//campaign data format:
 	/*
@@ -23,17 +31,17 @@ if (isServer) then {
 	*/
 
 	//key identifys a hashmap, value identifys if hashmap values are also hashmaps
-	_hashmapIdentifiers = createHashMapFromArray [["players", true], ["previousInventorys", false]];
+	//_hashmapIdentifiers = createHashMapFromArray [["players", true], ["previousInventorys", false]];
 
 	//load and validate data
 	//array should have been validated at edeneditor save, this is a safe operation
-	_arraydCampaignData = parseSimpleArray _rawCampaignData;
+	//_arraydCampaignData = parseSimpleArray _rawCampaignData;
 
-	_currentCampaignData = createHashMapFromArray _arraydCampaignData;
+	//_currentCampaignData = createHashMapFromArray _arraydCampaignData;
 
-	[_hashmapIdentifiers, _currentCampaignData, false] call macp_core_fnc_investigateHashmap;
+	//[_hashmapIdentifiers, _currentCampaignData, false] call macp_core_fnc_investigateHashmap;
 
-	macp_currentCampaignData = _currentCampaignData;
+	macp_currentCampaignData = _rawCampaignData;
 
 	_key = macp_currentCampaignData get "key";
 	_autosavedCampaignData = _allCampaignData getOrDefault [_key, macp_currentCampaignData];
@@ -80,86 +88,93 @@ if (isServer) then {
 //if not the server don't need to pickup loadouts
 if (not hasInterface) exitWith {};
 
-mcap_initialRespawn = false;
+[{
+	not (isNil "macp_failedInit");
+}, {
+	if (macp_failedInit) exitWith {diag_log (text "MACP - ERROR: No raw campaign data found, persistance is not active");};
+	mcap_initialRespawn = false;
 
-//create player profile if it doesn't exist
-[[getPlayerUID player], macp_core_fnc_createPlayerProfile] remoteExec ['call', 2];
+	//create player profile if it doesn't exist
+	[[getPlayerUID player], macp_core_fnc_createPlayerProfile] remoteExec ['call', 2];
 
-//request server to give me loadout i should have
-[[getPlayerUID player], macp_core_fnc_provideCurrentLoadout] remoteExec ['call', 2];
+	//request server to give me loadout i should have
+	[[getPlayerUID player], macp_core_fnc_provideCurrentLoadout] remoteExec ['call', 2];
 
-//init personal vault
-[[getPlayerUID player], macp_core_fnc_initPersonalVault] remoteExec ['call', 2];
+	//init personal vault
+	[[getPlayerUID player], macp_core_fnc_initPersonalVault] remoteExec ['call', 2];
 
-//add ace interaction to open Personal Vault
-_condition =
-{
-	_result = false;
-	if (isNil "macp_restrictPersonalVaultAreas") then
+	//add ace interaction to open Personal Vault
+	_condition =
 	{
-		_result = true;
-	} else {
+		_result = false;
+		if (isNil "macp_restrictPersonalVaultAreas") then
 		{
-			_area = _x getVariable ["objectArea",[0,0,0,false,0]];
-			//x,y,rot,whether its a rectangle,z
-
-			_areaPos = getPosASL _x;
-			_areaPos = ASLToAGL _areaPos;
-
-			_playerPos = getPosASL _player;
-			_playerPos = ASLToAGL _playerPos;
-			_arguments = [_areaPos];
-			_arguments append _area;
-			if (_playerPos inArea _arguments) then
+			_result = true;
+		} else {
 			{
-				_result = true;
-			}
-		} forEach macp_restrictPersonalVaultAreas;
-	};
-  ([_player, _target, []] call ace_common_fnc_canInteractWith) and (isNull objectParent _player) and (_result)
-};
-_statement =
-{
-  [[getPlayerUID player], macp_core_fnc_accessPersonalVault] remoteExec ['call', 2];
-};
-_action = ["openPersonalVault", "Open Personal Vault", "\a3\ui_f\data\igui\cfg\simpletasks\types\Container_ca.paa", _statement, _condition] call ace_interact_menu_fnc_createAction;
-[player, 1, ["ACE_SelfActions"], _action] call ace_interact_menu_fnc_addActionToObject;
+				_area = _x getVariable ["objectArea",[0,0,0,false,0]];
+				//x,y,rot,whether its a rectangle,z
 
-//set kit to default on respawn
-player addEventHandler ["Respawn", {
-	params ["_unit", "_corpse"];
-	if (mcap_initialRespawn) then
+				_areaPos = getPosASL _x;
+				_areaPos = ASLToAGL _areaPos;
+
+				_playerPos = getPosASL _player;
+				_playerPos = ASLToAGL _playerPos;
+				_arguments = [_areaPos];
+				_arguments append _area;
+				if (_playerPos inArea _arguments) then
+				{
+					_result = true;
+				}
+			} forEach macp_restrictPersonalVaultAreas;
+		};
+		([_player, _target, []] call ace_common_fnc_canInteractWith) and (isNull objectParent _player) and (_result)
+	};
+	_statement =
 	{
-		mcap_initialRespawn = false;
-		[[getPlayerUID player], macp_core_fnc_provideCurrentLoadout] remoteExec ['call', 2];
-	} else {
-		[[getPlayerUID player], macp_core_fnc_provideDefaultLoadout] remoteExec ['call', 2];
+		[[getPlayerUID player], macp_core_fnc_accessPersonalVault] remoteExec ['call', 2];
 	};
-}];
+	_action = ["openPersonalVault", "Open Personal Vault", "\a3\ui_f\data\igui\cfg\simpletasks\types\Container_ca.paa", _statement, _condition] call ace_interact_menu_fnc_createAction;
+	[player, 1, ["ACE_SelfActions"], _action] call ace_interact_menu_fnc_addActionToObject;
 
-//save kit to previous inventorys when killed
-player addEventHandler ["Killed", {
-	params ["_unit", "_killer", "_instigator", "_useEffects", "_shot", "_real"];
-	if (time > 2) then
-	{
-		[{
-			params ["_unit"];
-			[[getPlayerUID player, "DEATH", _unit], macp_core_fnc_saveToPreviousInventorys] remoteExec ['call', 2];
-		}, [_unit], 0.1] call CBA_fnc_waitAndExecute;
-	} else {
-		mcap_initialRespawn = true;
+	//set kit to default on respawn
+	player addEventHandler ["Respawn", {
+		params ["_unit", "_corpse"];
+		if (mcap_initialRespawn) then
+		{
+			mcap_initialRespawn = false;
+			[[getPlayerUID player], macp_core_fnc_provideCurrentLoadout] remoteExec ['call', 2];
+		} else {
+			[[getPlayerUID player], macp_core_fnc_provideDefaultLoadout] remoteExec ['call', 2];
+		};
+	}];
+
+	//save kit to previous inventorys when killed
+	player addEventHandler ["Killed", {
+		params ["_unit", "_killer", "_instigator", "_useEffects", "_shot", "_real"];
+		if (time > 2) then
+		{
+			[{
+				params ["_unit"];
+				[[getPlayerUID player, "DEATH", _unit], macp_core_fnc_saveToPreviousInventorys] remoteExec ['call', 2];
+			}, [_unit], 0.1] call CBA_fnc_waitAndExecute;
+		} else {
+			mcap_initialRespawn = true;
+		};
+	}];
+
+	"macp_currentCampaignData" addPublicVariableEventHandler {
+		_value = _this select 1;
+
+		//if player is admin save the data, it is presumed data will always want to be saved if you're the admin
+		_admin = call BIS_fnc_admin;
+		if (_admin isEqualTo 0) exitWith {};
+
+		_allCampaignData = profileNamespace getVariable ["macp_clientAllCampaignData", createHashMap];
+		_key = _value get "key";
+		_allCampaignData set [_key, _value];
+		saveProfileNamespace;
 	};
-}];
-
-"macp_currentCampaignData" addPublicVariableEventHandler {
-	_value = _this select 1;
-
-	//if player is admin save the data, it is presumed data will always want to be saved if you're the admin
-	_admin = call BIS_fnc_admin;
-	if (_admin isEqualTo 0) exitWith {};
-
-	_allCampaignData = profileNamespace getVariable ["macp_clientAllCampaignData", createHashMap];
-	_key = _value get "key";
-	_allCampaignData set [_key, _value];
-	saveProfileNamespace;
-};
+}, [], 10, {
+	diag_log (text "MACP - ERROR: Server failed to init within 10 seconds, presuming catastrophic failure");
+}] call CBA_fnc_waitUntilAndExecute;

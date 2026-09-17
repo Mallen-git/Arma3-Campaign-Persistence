@@ -48,6 +48,7 @@ class scrollbar;
 class macp_campaignManagerToolDialog
 {
 	idd = -1;
+	onUnload = "[] call macp_core_fnc_updateModuleAttributes;";
 	class ControlsBackground
 	{
 		//Background controls
