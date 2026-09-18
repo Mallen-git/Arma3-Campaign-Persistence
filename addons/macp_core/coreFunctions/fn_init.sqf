@@ -17,30 +17,6 @@ if (isServer) then {
 	macp_failedInit = false;
 	publicVariable "macp_failedInit";
 
-	//campaign data format:
-	/*
-		"key" - String
-		"players" - Hashmap
-			playerUID - Hashmap
-				"lastUsedName" - String
-				"currentInventory" - Loadout Array
-				"previousInventorys" - Hashmap
-					dateTime - Loadout Array
-				"personalVault" - Array
-		"defaultKit" - Loadout Array
-	*/
-
-	//key identifys a hashmap, value identifys if hashmap values are also hashmaps
-	//_hashmapIdentifiers = createHashMapFromArray [["players", true], ["previousInventorys", false]];
-
-	//load and validate data
-	//array should have been validated at edeneditor save, this is a safe operation
-	//_arraydCampaignData = parseSimpleArray _rawCampaignData;
-
-	//_currentCampaignData = createHashMapFromArray _arraydCampaignData;
-
-	//[_hashmapIdentifiers, _currentCampaignData, false] call macp_core_fnc_investigateHashmap;
-
 	macp_currentCampaignData = _rawCampaignData;
 
 	_key = macp_currentCampaignData get "key";
