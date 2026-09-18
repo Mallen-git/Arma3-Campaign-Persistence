@@ -86,11 +86,13 @@ _dataViewerText ctrlSetText _data;
 _buttonDelete = _display displayCtrl 2402;
 _buttonNew = _display displayCtrl 2403;
 _buttonEdit = _display displayCtrl 2404;
+_buttonExport = _display displayCtrl 2406;
 
 _buttonOptions = _availableOptionsPerItem getOrDefault [_selectedDataKey, [false, false, false]];
 if (_filePath isEqualTo []) then
 {
 	_buttonOptions = _availableOptionsPerFolder get "root";
+	_buttonExport ctrlEnable true;
 } else {
 	_buttonOptions = _availableOptionsPerFolder getOrDefault [(_filePath select -1), _buttonOptions];
 };

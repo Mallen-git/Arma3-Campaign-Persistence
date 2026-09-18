@@ -38,6 +38,7 @@ class CfgFunctions
 			class buttonDeletePressed {};
 			class buttonEditPressed {};
 			class buttonNewPressed {};
+			class buttonExportPressed {};
 			class restrictPersonalVaultModule {};
 			class updateModuleAttributes {};
 		};

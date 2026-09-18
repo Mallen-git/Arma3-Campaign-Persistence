@@ -83,7 +83,9 @@ if (_filePath isEqualTo []) then
 _buttonDelete = _display displayCtrl 2402;
 _buttonNew = _display displayCtrl 2403;
 _buttonEdit = _display displayCtrl 2404;
+_buttonExport = _display displayCtrl 2406;
 
 _buttonDelete ctrlEnable false;
 _buttonNew ctrlEnable _allowNew;
 _buttonEdit ctrlEnable false;
+_buttonExport ctrlEnable false;

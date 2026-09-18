@@ -5,7 +5,7 @@ class CfgPatches
 		units[] = {};
 		weapons[] = {};
 		requiredVersion = 0.1;
-		requiredAddons[] = {"3DEN", "A3_Data_F_Decade_Loadorder"};
+		requiredAddons[] = {"A3_3DEN", "3DEN", "A3_Data_F_Decade_Loadorder"};
 	};
 };
 

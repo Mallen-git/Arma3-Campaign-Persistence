@@ -174,6 +174,16 @@ class macp_campaignManagerToolDialog
 			h = CTRL_DEFAULT_H;
 			onButtonClick = "params ['_control']; _display = ctrlParent _control; [_display] call macp_core_fnc_buttonEditPressed;";
 		};
+		class Export: ctrlButton
+		{
+			idc = 2406;
+			text = "Export"; //--- ToDo: Localize;
+			x = CENTER_X - WINDOW_W_WIDE * 0.5 * GRID_W + 105 * GRID_W;
+			y = WINDOW_TOPAbs + WINDOW_HAbs - 3 * CTRL_DEFAULT_H - GRID_H;
+			w = 25 * GRID_W;
+			h = CTRL_DEFAULT_H;
+			onButtonClick = "params ['_control']; _display = ctrlParent _control; [_display] call macp_core_fnc_buttonExportPressed;";
+		};
 	};
 };
 
