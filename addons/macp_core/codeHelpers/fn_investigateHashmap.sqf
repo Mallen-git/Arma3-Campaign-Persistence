@@ -25,9 +25,12 @@ params[["_hashmapIdentifiers", objNull, [createHashMap]], ["_workingHashMap", ob
 
 	if (_key in _hashmapIdentifiers or _allHashmaps) then
 	{
-		_newHashmap = createHashMapFromArray _value;
-		_childrenHashmaps = _hashmapIdentifiers getOrDefault [_key, false];
-		_workingHashMap set [_key, _newHashmap];
-		[_hashmapIdentifiers, _newHashmap, _childrenHashmaps] call macp_core_fnc_investigateHashmap;
+		if ([_value] call macp_core_fnc_validateHashmap) then
+		{
+			_newHashmap = createHashMapFromArray _value;
+			_childrenHashmaps = _hashmapIdentifiers getOrDefault [_key, false];
+			_workingHashMap set [_key, _newHashmap];
+			[_hashmapIdentifiers, _newHashmap, _childrenHashmaps] call macp_core_fnc_investigateHashmap;
+		};
 	};
 } forEach _workingHashMap;

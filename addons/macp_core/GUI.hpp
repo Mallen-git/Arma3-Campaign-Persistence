@@ -174,6 +174,16 @@ class macp_campaignManagerToolDialog
 			h = CTRL_DEFAULT_H;
 			onButtonClick = "params ['_control']; _display = ctrlParent _control; [_display] call macp_core_fnc_buttonEditPressed;";
 		};
+		class Import: ctrlButton
+		{
+			idc = 2405;
+			text = "Import"; //--- ToDo: Localize;
+			x = CENTER_X - WINDOW_W_WIDE * 0.5 * GRID_W + 79 * GRID_W;
+			y = WINDOW_TOPAbs + WINDOW_HAbs - 3 * CTRL_DEFAULT_H - GRID_H;
+			w = 25 * GRID_W;
+			h = CTRL_DEFAULT_H;
+			onButtonClick = "params ['_control']; _display = ctrlParent _control; [_display] call macp_core_fnc_buttonImportPressed;";
+		};
 		class Export: ctrlButton
 		{
 			idc = 2406;
@@ -322,6 +332,73 @@ class macp_campaignManagerConfirmDelete
 			text = "Delete";
 			x = CENTER_X - 0.5 * 53 * GRID_W + (53 - 52) * GRID_W;
 			y = WINDOW_TOPAbs + 20 * GRID_H;
+			w = 25 * GRID_W;
+			h = CTRL_DEFAULT_H;
+		};
+	};
+};
+
+
+class macp_campaignManagerImport
+{
+	idd = -1;
+	class ControlsBackground
+	{
+		//Background controls
+
+		class BackgroundDisable: ctrlStaticBackgroundDisable {};
+		class BackgroundDisableTiles: ctrlStaticBackgroundDisableTiles {};
+
+		class Header: ctrlStaticTitle
+		{
+			text = "MACP Import Campaign";
+			x = CENTER_X - WINDOW_W_WIDE * 0.5 * GRID_W;
+			y = WINDOW_TOPAbs;
+			w = WINDOW_W_WIDE * GRID_W;
+			h = CTRL_DEFAULT_H;
+		};
+
+		class Background: ctrlStaticBackground
+		{
+			x = CENTER_X - WINDOW_W_WIDE * 0.5 * GRID_W;
+			y = WINDOW_TOPAbs + CTRL_DEFAULT_H;
+			w = WINDOW_W_WIDE * GRID_W;
+			h = WINDOW_HAbs - 3 * CTRL_DEFAULT_H;
+		};
+
+		class Footer: ctrlStaticFooter
+		{
+			x = CENTER_X - WINDOW_W_WIDE * 0.5 * GRID_W;
+			y = WINDOW_TOPAbs + WINDOW_HAbs - 3 * CTRL_DEFAULT_H - 2 * GRID_H;
+			w = WINDOW_W_WIDE * GRID_W;
+			h = 7 * GRID_H;
+		};
+	};
+	class Controls
+	{
+		//Controls
+		class TextInput: ctrlEditMulti
+		{
+			idc = 1003;
+			text = "";
+			x = CENTER_X - WINDOW_W_WIDE * 0.5 * GRID_W + GRID_W;
+			y = WINDOW_TOPAbs + CTRL_DEFAULT_H + GRID_H);
+			w = WINDOW_W_WIDE * GRID_W - 2 * GRID_W;
+			h = WINDOW_HAbs - 24 * GRID_H;
+		};
+		class Import: ctrlButton
+		{
+			idc = 2403;
+			text = "Import"; //--- ToDo: Localize;
+			x = CENTER_X - WINDOW_W_WIDE * 0.5 * GRID_W + GRID_W;
+			y = WINDOW_TOPAbs + WINDOW_HAbs - 3 * CTRL_DEFAULT_H - GRID_H;
+			w = 25 * GRID_W;
+			h = CTRL_DEFAULT_H;
+		};
+		class Close: ctrlButtonClose
+		{
+			x = CENTER_X + 0.5 * WINDOW_W_WIDE * GRID_W - 26 * GRID_W;
+			y = WINDOW_TOPAbs + WINDOW_HAbs - 3 * CTRL_DEFAULT_H - GRID_H;
 			w = 25 * GRID_W;
 			h = CTRL_DEFAULT_H;
 		};

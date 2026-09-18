@@ -17,6 +17,8 @@ class CfgFunctions
 		{
 			file = "macp_core\codeHelpers";
 			class investigateHashmap {};
+			class validateHashmap {};
+			class validateStringInput {};
 		};
 		class personalVault
 		{
@@ -39,6 +41,7 @@ class CfgFunctions
 			class buttonEditPressed {};
 			class buttonNewPressed {};
 			class buttonExportPressed {};
+			class buttonImportPressed {};
 			class restrictPersonalVaultModule {};
 			class updateModuleAttributes {};
 		};
