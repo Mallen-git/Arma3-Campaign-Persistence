@@ -42,6 +42,7 @@ class CfgFunctions
 			class buttonNewPressed {};
 			class buttonExportPressed {};
 			class buttonImportPressed {};
+			class buttonImportActualPressed {};
 			class restrictPersonalVaultModule {};
 			class updateModuleAttributes {};
 		};

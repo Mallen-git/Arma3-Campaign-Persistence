@@ -379,21 +379,32 @@ class macp_campaignManagerImport
 		//Controls
 		class TextInput: ctrlEditMulti
 		{
-			idc = 1003;
+			idc = 1006;
 			text = "";
+			x = CENTER_X - WINDOW_W_WIDE * 0.5 * GRID_W + GRID_W;
+			y = WINDOW_TOPAbs + 2 * CTRL_DEFAULT_H + 2 * GRID_H);
+			w = WINDOW_W_WIDE * GRID_W - 2 * GRID_W;
+			h = WINDOW_HAbs - 29 * GRID_H;
+		};
+		class TextOutput: ctrlEdit
+		{
+			idc = 1007;
+			text = "Tool output...";
 			x = CENTER_X - WINDOW_W_WIDE * 0.5 * GRID_W + GRID_W;
 			y = WINDOW_TOPAbs + CTRL_DEFAULT_H + GRID_H);
 			w = WINDOW_W_WIDE * GRID_W - 2 * GRID_W;
-			h = WINDOW_HAbs - 24 * GRID_H;
+			h = CTRL_DEFAULT_H;
+			canModify = 0;
 		};
 		class Import: ctrlButton
 		{
-			idc = 2403;
+			idc = 2487;
 			text = "Import"; //--- ToDo: Localize;
 			x = CENTER_X - WINDOW_W_WIDE * 0.5 * GRID_W + GRID_W;
 			y = WINDOW_TOPAbs + WINDOW_HAbs - 3 * CTRL_DEFAULT_H - GRID_H;
 			w = 25 * GRID_W;
 			h = CTRL_DEFAULT_H;
+			onButtonClick = "params ['_control']; _display = ctrlParent _control; [_display] call macp_core_fnc_buttonImportActualPressed;";
 		};
 		class Close: ctrlButtonClose
 		{

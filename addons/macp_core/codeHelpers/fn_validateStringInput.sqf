@@ -13,7 +13,30 @@
 	Examples:
 		[_input] call macp_core_fnc_validateStringInput;
 */
-_input = '';
+params[["_input", "", [""]]];
+
+
+_correctDataChecking = createHashMapFromArray [
+	["key", ["STRING"]],
+	["players", ["HASHMAP"]],
+	["ver", ["ARRAY", 3, "SCALAR"]],
+	["defaultKit", ["ARRAY", 10, "KIT"]],
+	["previousInventorys", ["HASHMAP"]],
+	["previousInventory", ["ARRAY", 10, "KIT"]],
+	["storageReason", ["STRING"]],
+	["currentInventory", ["ARRAY", 10, "KIT"]],
+	["lastUsedName", ["STRING"]],
+	["personalVault", ["ARRAY", 4, "VAULT"]]
+];
+
+_correctDataLocation = createHashMapFromArray [
+	["root", ["key", "players", "ver", "defaultKit"]],
+	["players", ["ALLHASHMAPS", "playerProfile"]],
+	["playerProfile", ["previousInventorys", "currentInventory", "lastUsedName", "personalVault"]],
+	["previousInventorys", ["ALLHASHMAPS", "prevInv"]],
+	["prevInv", ["previousInventory", "storageReason"]]
+];
+
 
 _characters = _input splitString "";
 
@@ -150,42 +173,62 @@ _workingHashMap = createHashMapFromArray _workingArray;
 [_hashmapIdentifiers, _workingHashMap, false] call macp_core_fnc_investigateHashmap;
 
 //have at least a hashmap tree to go through, thats good enough for me to start checking values
-_correctDataChecking = createHashMapFromArray [
-	["key", ["STRING"]],
-	["players", ["HASHMAP", true]],
-	["ver", ["ARRAY", 3, "SCALAR"]],
-	["defaultKit", ["ARRAY", 10, "KIT"]],
-	["previousInventorys", ["HASHMAP", true]],
-	["previousInventory", ["ARRAY", 10, "KIT"]],
-	["storageReason", ["STRING"]],
-	["currentInventory", ["ARRAY", 10, "KIT"]],
-	["lastUsedName", ["STRING"]],
-	["personalVault", ["ARRAY", 4, "VAULT"]]
-];
 
-_correctDataLocation = [
-	["key"],
-	["players",
-	[
-		["ALLHASHMAPS",
-		[
-			["currentInventory"],
-			["previousInventorys",
-			[
-				["ALLHASHMAPS",
-				[
-					["previousInventory"],
-					["storageReason"]
-				]
-				]
-			]
-			],
-			["lastUsedName"],
-			["personalVault"]
-		]
-		]
-	]
-	],
-	["ver"],
-	["defaultKit"]
-];
+_checkHashCorrect = {
+	params["_checkHashCorrect", "_correctDataChecking", "_correctDataLocation", "_currentHashmap", "_levelName"];
+
+	test = _this;
+	_expectedItems = _correctDataLocation get _levelName;
+
+	_wildcardHashmap = false;
+	if ((_expectedItems select 0) isEqualTo "ALLHASHMAPS") then
+	{
+		_wildcardHashmap = true;
+	};
+
+	{
+		if (_wildcardHashmap) then
+		{
+			_workingLevelName = _expectedItems select 1;
+			if ((typeName _y) isNotEqualTo "HASHMAP") exitWith {true;};
+			_result = [_checkHashCorrect, _correctDataChecking, _correctDataLocation, _y, _workingLevelName] call _checkHashCorrect;
+			if (_result) exitWith {true;};
+		};
+
+		if (not (_x in _expectedItems)) exitWith {testFail = "not in expected";true;};
+
+		_expectedItems deleteAt (_expectedItems find _x);
+
+		_keyDataType = _correctDataChecking getOrDefault [_x, "NONEFOUND"];
+		if (_keyDataType isEqualTo "NONEFOUND") exitWith {testFail = "not in data checking";true;};
+
+		_typeName = _keyDataType select 0;
+		if ((typeName _y) isNotEqualTo _typeName) exitWith {testFail = "wrong data typename";true;};
+
+		switch (_typeName) do
+		{
+			case "HASHMAP": {
+				_result = [_checkHashCorrect, _correctDataChecking, _correctDataLocation, _y, _x] call _checkHashCorrect;
+				if (_result) exitWith {true;};
+			};
+			case "STRING": {};
+			case "ARRAY": {
+				_size = _keyDataType select 1;
+				if ((count _y) isNotEqualTo _size) exitWith {testFail = "wrong array size";true;};
+			};
+			default {if (true) exitWith {testFail = "defaulted typename";true;};};
+		};
+	} forEach _currentHashmap;
+
+	if (not _wildcardHashmap) then
+	{
+		if (count _expectedItems isNotEqualTo 0) exitWith {testFail = "non-zero expected items";true;};
+	};
+
+	false;
+};
+
+_result = [_checkHashCorrect, _correctDataChecking, _correctDataLocation, _workingHashMap, "root"] call _checkHashCorrect;
+if (_result) exitWith {"Input data is incorrect format (tree parsing error)";};
+
+_workingHashMap;
