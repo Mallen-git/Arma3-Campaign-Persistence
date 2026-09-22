@@ -27,6 +27,11 @@ if (_requestedUID in _allPlayerProfiles) exitWith {};
 
 _defaultKit = macp_currentCampaignData get "defaultKit";
 
+if (not macp_defaultKit) then
+{
+	_defaultKit = getUnitLoadout player;
+};
+
 _defaultPlayerProfileArray = [
 	["lastUsedName", "NONEFOUND"],
 	["currentInventory", _defaultKit],

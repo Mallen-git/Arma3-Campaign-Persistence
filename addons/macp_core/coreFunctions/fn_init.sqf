@@ -49,7 +49,7 @@ if (isServer) then {
 			call macp_core_fnc_saveAllKitsAndVaults;
 			publicVariable "macp_currentCampaignData";
 			saveProfileNamespace;
-		}, 30] call CBA_fnc_addPerFrameHandler;
+		}, macp_autoSaveTime] call CBA_fnc_addPerFrameHandler;
 	}, [], 4.2649] call CBA_fnc_waitAndExecute;
 
 	//if player is server then autosave isn't needed, simply link the data correctly and go from there
@@ -121,7 +121,10 @@ if (not hasInterface) exitWith {};
 			mcap_initialRespawn = false;
 			[[getPlayerUID player], macp_core_fnc_provideCurrentLoadout] remoteExec ['call', 2];
 		} else {
-			[[getPlayerUID player], macp_core_fnc_provideDefaultLoadout] remoteExec ['call', 2];
+			if (macp_defaultKit) then
+			{
+				[[getPlayerUID player], macp_core_fnc_provideDefaultLoadout] remoteExec ['call', 2];
+			};
 		};
 	}];
 
@@ -141,10 +144,33 @@ if (not hasInterface) exitWith {};
 
 	"macp_currentCampaignData" addPublicVariableEventHandler {
 		_value = _this select 1;
+		_saveValue = false;
+		switch (macp_saveChoice) do
+		{
+			//only admin
+			case 1: {_saveValue = call BIS_fnc_admin;};
 
-		//if player is admin save the data, it is presumed data will always want to be saved if you're the admin
-		_admin = call BIS_fnc_admin;
-		if (_admin isEqualTo 0) exitWith {};
+			//admin and UIDs
+			case 2: {
+				_saveValue = call BIS_fnc_admin;
+				if ([macp_saveUIDs] call macp_core_fnc_validUIDArray) then
+				{
+					_array = parseSimpleArray macp_saveUIDs;
+					if ((getPlayerUID player) in _array) then
+					{
+						_saveValue = true;
+					};
+				};
+			};
+
+			//Everyone
+			case 3: {_saveValue = true;};
+
+			//also only admin
+			default {_saveValue = call BIS_fnc_admin;};
+		};
+
+		if (not _saveValue) exitWith {};
 
 		_allCampaignData = profileNamespace getVariable ["macp_clientAllCampaignData", createHashMap];
 		_key = _value get "key";

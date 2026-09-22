@@ -19,6 +19,7 @@ class CfgFunctions
 			class investigateHashmap {};
 			class validateHashmap {};
 			class validateStringInput {};
+			class validUIDArray {};
 		};
 		class personalVault
 		{

@@ -18,3 +18,10 @@ class CfgPatches
 #include "GUI.hpp"
 #include "tools.hpp"
 #include "attributes.hpp"
+
+
+class Extended_PreInit_EventHandlers {
+  class My_pre_init_event {
+    init = "call compile preprocessFileLineNumbers 'macp_core\XEH_preInit.sqf'";
+  };
+};
