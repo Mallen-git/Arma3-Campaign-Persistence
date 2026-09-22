@@ -22,7 +22,7 @@ _text = ctrlText _textCtrl;
 
 _output = [_text] call macp_core_fnc_validateStringInput;
 
-if ((typeName _output) isEqualTo "STRING") exitWith {_errorCtrl ctrlSetText ("*** ERROR *** " + _output);};
+if ((typeName _output) isEqualTo "STRING") exitWith {_errorCtrl ctrlSetText ("*** ERROR *** " + _output); macp_globalErrorCode = nil;};
 
 _allCampaignData = profileNamespace getVariable ["macp_clientAllCampaignData", createHashMap];
 

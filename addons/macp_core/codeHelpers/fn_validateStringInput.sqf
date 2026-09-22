@@ -172,7 +172,7 @@ _workingHashMap = createHashMapFromArray _workingArray;
 
 [_hashmapIdentifiers, _workingHashMap, false] call macp_core_fnc_investigateHashmap;
 
-//have at least a hashmap tree to go through, thats good enough for me to start checking values
+macp_globalErrorCode = "";
 
 _checkHashCorrect = {
 	params["_checkHashCorrect", "_correctDataChecking", "_correctDataLocation", "_currentHashmap", "_levelName"];
@@ -190,20 +190,20 @@ _checkHashCorrect = {
 		if (_wildcardHashmap) then
 		{
 			_workingLevelName = _expectedItems select 1;
-			if ((typeName _y) isNotEqualTo "HASHMAP") exitWith {true;};
+			if ((typeName _y) isNotEqualTo "HASHMAP") exitWith {macp_globalErrorCode = ('"' + _x + '" should be a hashmap, it is actually a ' + (typeName _y));true;};
 			_result = [_checkHashCorrect, _correctDataChecking, _correctDataLocation, _y, _workingLevelName] call _checkHashCorrect;
 			if (_result) exitWith {true;};
 		};
 
-		if (not (_x in _expectedItems)) exitWith {testFail = "not in expected";true;};
+		if (not (_x in _expectedItems)) exitWith {macp_globalErrorCode = ('"' + _x + '" should not be in hashmap ' + _levelName);true;};
 
 		_expectedItems deleteAt (_expectedItems find _x);
 
 		_keyDataType = _correctDataChecking getOrDefault [_x, "NONEFOUND"];
-		if (_keyDataType isEqualTo "NONEFOUND") exitWith {testFail = "not in data checking";true;};
+		if (_keyDataType isEqualTo "NONEFOUND") exitWith {macp_globalErrorCode = ('cannot find the correct data type for "' + _x + '"');true;};
 
 		_typeName = _keyDataType select 0;
-		if ((typeName _y) isNotEqualTo _typeName) exitWith {testFail = "wrong data typename";true;};
+		if ((typeName _y) isNotEqualTo _typeName) exitWith {macp_globalErrorCode = ('"' + _x + '" should be a ' + _typeName + ', it is actually a ' + (typeName _y));true;};
 
 		switch (_typeName) do
 		{
@@ -214,21 +214,22 @@ _checkHashCorrect = {
 			case "STRING": {};
 			case "ARRAY": {
 				_size = _keyDataType select 1;
-				if ((count _y) isNotEqualTo _size) exitWith {testFail = "wrong array size";true;};
+				if ((count _y) isNotEqualTo _size) exitWith {macp_globalErrorCode = ('"' + _x + '" should be an array with size' + str(_size) + ' it is actually size ' + str(count _y));true;};
 			};
-			default {if (true) exitWith {testFail = "defaulted typename";true;};};
+			default {if (true) exitWith {macp_globalErrorCode = ('"' + _x + '" is not a Hashmap, String, or Array, it should be one of these');true;};};
 		};
 	} forEach _currentHashmap;
 
 	if (not _wildcardHashmap) then
 	{
-		if (count _expectedItems isNotEqualTo 0) exitWith {testFail = "non-zero expected items";true;};
+		if (count _expectedItems isNotEqualTo 0) exitWith {macp_globalErrorCode = ('Hashmap "' + _levelName + '" is missing keys: ' + str(_expectedItems));true;};
 	};
 
 	false;
 };
 
 _result = [_checkHashCorrect, _correctDataChecking, _correctDataLocation, _workingHashMap, "root"] call _checkHashCorrect;
-if (_result) exitWith {"Input data is incorrect format (tree parsing error)";};
+if (_result) exitWith {macp_globalErrorCode;};
 
+macp_globalErrorCode = nil;
 _workingHashMap;
