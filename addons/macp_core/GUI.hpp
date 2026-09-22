@@ -127,7 +127,7 @@ class macp_campaignManagerToolDialog
 			h = CTRL_DEFAULT_H;
 			onButtonClick = "params ['_control']; _display = ctrlParent _control; _filePath = _display getVariable ['macp_filePath', []]; if (_filePath isEqualTo []) exitWith {}; _filePath deleteAt [-1]; _display setVariable ['macp_filePath', _filePath]; [_display] call macp_core_fnc_updateFileBrowser;";
 		};
-		class FolderList: ctrlListBox
+		class FolderList: ctrlListbox
 		{
 			idc = 1500;
 			x = CENTER_X - WINDOW_W_WIDE * 0.5 * GRID_W;
@@ -338,7 +338,6 @@ class macp_campaignManagerConfirmDelete
 	};
 };
 
-
 class macp_campaignManagerImport
 {
 	idd = -1;
@@ -406,6 +405,142 @@ class macp_campaignManagerImport
 			h = CTRL_DEFAULT_H;
 			onButtonClick = "params ['_control']; _display = ctrlParent _control; [_display] call macp_core_fnc_buttonImportActualPressed;";
 		};
+		class Close: ctrlButtonClose
+		{
+			x = CENTER_X + 0.5 * WINDOW_W_WIDE * GRID_W - 26 * GRID_W;
+			y = WINDOW_TOPAbs + WINDOW_HAbs - 3 * CTRL_DEFAULT_H - GRID_H;
+			w = 25 * GRID_W;
+			h = CTRL_DEFAULT_H;
+		};
+	};
+};
+
+class macp_adminMenu
+{
+	idd = -1;
+	class ControlsBackground
+	{
+		//Background controls
+
+		class Header: ctrlStaticTitle
+		{
+			text = "MACP Admin Menu";
+			x = CENTER_X - WINDOW_W_WIDE * 0.5 * GRID_W;
+			y = WINDOW_TOPAbs;
+			w = WINDOW_W_WIDE * GRID_W;
+			h = CTRL_DEFAULT_H;
+		};
+
+		class Background: ctrlStaticBackground
+		{
+			x = CENTER_X - WINDOW_W_WIDE * 0.5 * GRID_W;
+			y = WINDOW_TOPAbs + CTRL_DEFAULT_H;
+			w = WINDOW_W_WIDE * GRID_W;
+			h = WINDOW_HAbs - 3 * CTRL_DEFAULT_H;
+		};
+
+		class Footer: ctrlStaticFooter
+		{
+			x = CENTER_X - WINDOW_W_WIDE * 0.5 * GRID_W;
+			y = WINDOW_TOPAbs + WINDOW_HAbs - 3 * CTRL_DEFAULT_H - 2 * GRID_H;
+			w = WINDOW_W_WIDE * GRID_W;
+			h = 7 * GRID_H;
+		};
+	};
+	class Controls
+	{
+		//Controls
+
+		class allOrOnline: ctrlCombo
+		{
+			x = CENTER_X - WINDOW_W_WIDE * 0.5 * GRID_W + GRID_W;
+			y = WINDOW_TOPAbs + CTRL_DEFAULT_H + GRID_H;
+			w = 0.25 * WINDOW_W_WIDE * GRID_W - 2 * GRID_W;
+			h = CTRL_DEFAULT_H;
+			class Items
+			{
+				class onlinePlayers
+				{
+					text = "Online Players";
+					default = 1;
+				};
+				class allPlayers
+				{
+					text = "All Players";
+				};
+			};
+		};
+		class searchBar: ctrlEdit
+		{
+			text = "Search...";
+			x = CENTER_X - WINDOW_W_WIDE * 0.5 * GRID_W + GRID_W;
+			y = WINDOW_TOPAbs + 2 * CTRL_DEFAULT_H + 2 * GRID_H;
+			w = 0.5 * WINDOW_W_WIDE * GRID_W - 2 * GRID_W;
+			h = CTRL_DEFAULT_H;
+			onSetFocus = "params ['_control']; if ((ctrlText _control) isEqualTo 'Search...') then {_control ctrlSetText '';};";
+			onKillFocus = "params ['_control']; if ((ctrlText _control) isEqualTo '') then {_control ctrlSetText 'Search...';};";
+		};
+		class playerListBox: ctrlListbox
+		{
+			x = CENTER_X - WINDOW_W_WIDE * 0.5 * GRID_W + GRID_W;
+			y = WINDOW_TOPAbs + 3 * CTRL_DEFAULT_H + 3 * GRID_H;
+			w = 0.5 * WINDOW_W_WIDE * GRID_W - 2 * GRID_W;
+			h = 0.5 * WINDOW_HAbs - 3 * CTRL_DEFAULT_H - 3 * GRID_H;
+			class Items
+			{
+				class noSelection
+				{
+					text = "No Selection";
+					data = "NOSELECTION";
+					default = 1;
+				};
+			};
+		};
+		class PrevInventoryTitle: ctrlStatic
+		{
+			text = "Previous Inventories:";
+			x = CENTER_X - WINDOW_W_WIDE * 0.5 * GRID_W + GRID_W;
+			y = WINDOW_TOPAbs + 0.5 * WINDOW_HAbs + GRID_H;
+			w = 0.5 * WINDOW_W_WIDE * GRID_W - 2 * GRID_W;
+			h = CTRL_DEFAULT_H;
+		};
+		class PrevInventorysListBox: ctrlListbox
+		{
+			x = CENTER_X - WINDOW_W_WIDE * 0.5 * GRID_W + GRID_W;
+			y = WINDOW_TOPAbs + 0.5 * WINDOW_HAbs + GRID_H + CTRL_DEFAULT_H;
+			w = 0.5 * WINDOW_W_WIDE * GRID_W - 2 * GRID_W;
+			h = 0.5 * WINDOW_HAbs - 4 * CTRL_DEFAULT_H - 4 * GRID_H;
+		};
+
+
+		class PreviewCam: ctrlStaticPicture
+		{
+			idc = 1200;
+			//text = "#(argb,512,512,1)r2t(macprttforunit,1.0)";
+			text = "#(rgb,8,8,3)color(0.5,0.5,0.5,0.5)";
+			x = CENTER_X;
+			y = WINDOW_TOPAbs + CTRL_DEFAULT_H + GRID_H;
+			w = 0.5 * WINDOW_W_WIDE * GRID_W - GRID_W;
+			h = 0.5 * WINDOW_HAbs - CTRL_DEFAULT_H - GRID_H;
+		};
+		class ButtonRestoreInventory: ctrlButton
+		{
+			text = "Restore Inventory";
+			x = CENTER_X;
+			y = WINDOW_TOPAbs + GRID_H + 0.5 * WINDOW_HAbs;
+			w = 0.25 * WINDOW_W_WIDE * GRID_W - GRID_W;
+			h = CTRL_DEFAULT_H;
+		};
+		class ButtonOpenVault: ctrlButton
+		{
+			text = "Open Vault";
+			x = CENTER_X + 0.25 * WINDOW_W_WIDE * GRID_W;
+			y = WINDOW_TOPAbs + GRID_H + 0.5 * WINDOW_HAbs;
+			w = 0.25 * WINDOW_W_WIDE * GRID_W - GRID_W;
+			h = CTRL_DEFAULT_H;
+		};
+
+
 		class Close: ctrlButtonClose
 		{
 			x = CENTER_X + 0.5 * WINDOW_W_WIDE * GRID_W - 26 * GRID_W;

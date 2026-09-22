@@ -59,6 +59,18 @@ if (isServer) then {
 		_allCampaignData set [_key, macp_currentCampaignData];
 		saveProfileNamespace;
 	};
+
+	addMissionEventHandler ["OnUserAdminStateChanged", {
+		params ["_networkId", "_loggedIn", "_votedIn"];
+		_userInfo = getUserInfo _networkId;
+		_machineNetworkID = _userInfo select 1;
+		if (_loggedIn) then
+		{
+			[[], macp_core_fnc_showAdminMenu] remoteExec ['call', _machineNetworkID];
+		} else {
+			[[], macp_core_fnc_hideAdminMenu] remoteExec ['call', _machineNetworkID];
+		};
+	}];
 };
 
 //if not the server don't need to pickup loadouts
@@ -78,6 +90,12 @@ if (not hasInterface) exitWith {};
 
 	//init personal vault
 	[[getPlayerUID player], macp_core_fnc_initPersonalVault] remoteExec ['call', 2];
+
+	//if admin, show admin menu
+	if (((call BIS_fnc_admin) > 0) or isServer) then
+	{
+		[] call macp_core_fnc_showAdminMenu;
+	};
 
 	//add ace interaction to open Personal Vault
 	_condition =
@@ -148,11 +166,11 @@ if (not hasInterface) exitWith {};
 		switch (macp_saveChoice) do
 		{
 			//only admin
-			case 1: {_saveValue = call BIS_fnc_admin;};
+			case 1: {_saveValue = ((call BIS_fnc_admin) > 0);};
 
 			//admin and UIDs
 			case 2: {
-				_saveValue = call BIS_fnc_admin;
+				_saveValue = ((call BIS_fnc_admin) > 0);
 				if ([macp_saveUIDs] call macp_core_fnc_validUIDArray) then
 				{
 					_array = parseSimpleArray macp_saveUIDs;
@@ -167,7 +185,7 @@ if (not hasInterface) exitWith {};
 			case 3: {_saveValue = true;};
 
 			//also only admin
-			default {_saveValue = call BIS_fnc_admin;};
+			default {_saveValue = ((call BIS_fnc_admin) > 0);};
 		};
 
 		if (not _saveValue) exitWith {};

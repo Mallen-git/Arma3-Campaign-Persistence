@@ -47,5 +47,12 @@ class CfgFunctions
 			class restrictPersonalVaultModule {};
 			class updateModuleAttributes {};
 		};
+		class adminMenu
+		{
+			file = "macp_core\adminMenu";
+			class openAdminMenu {};
+			class showAdminMenu {};
+			class hideAdminMenu {};
+		};
 	};
 };
