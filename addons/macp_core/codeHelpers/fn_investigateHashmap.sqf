@@ -2,7 +2,7 @@
 	Author: Mallen
 
 	Description:
-		Provides the unit requested their current loadout based on the servers knowledge
+		looks at a hashmap, checks if any of its keys are supposed to be hashmaps, creates the hashmap of that key if its a valid format, checks the created hashmap
 
 	Parameter(s):
 		0: HASHMAP - Hashmap of all keys that would constitute a hashmap and whether that hashmaps children are also all hashmaps
