@@ -25,8 +25,12 @@ if (_requestedUID isEqualTo "NOTSUPPLIED") exitWith {diag_log (text "MACP - ERRO
 //get the vault of the requested player
 _vault = macp_personalVaultLists getOrDefault [_requestedUID, objNull];
 
-//if no vault then exit
-if (isNull _vault) exitWith {};
+//if no vault then attempt to init it
+if (isNull _vault) then
+{
+	[_requestedUID] call macp_core_fnc_initPersonalVault;
+	_vault = macp_personalVaultLists getOrDefault [_requestedUID, objNull];
+};
 
 //get the unit trying to open the vault
 _requestedUIDUnit = _requestedUID call BIS_fnc_getUnitByUID;
