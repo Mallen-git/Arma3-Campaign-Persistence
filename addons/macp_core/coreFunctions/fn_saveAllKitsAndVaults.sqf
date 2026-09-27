@@ -14,18 +14,22 @@
 		call macp_core_fnc_saveAllKitsAndVaults;
 */
 
+//always on server
 if (not isServer) exitWith {diag_log (text "MACP - ERROR: macp_core_fnc_saveAllKitsAndVaults ran on client, not server")};
 
+//get all current players profiles
 _allPlayerProfiles = macp_currentCampaignData get "players";
 
 {
 	_playerUID = _x;
 	_playerProfile = _y;
 
+	//save players vault (handles people not on server gracefully)
 	[_playerUID] call macp_core_fnc_savePersonalVault;
 
 	_playerUnit = _playerUID call BIS_fnc_getUnitByUID;
 
+	//cannot save a units loadout if not on the server
 	if (isNull _playerUnit) then {continue;};
 
 	_playerLoadout = getUnitLoadout _playerUnit;

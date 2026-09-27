@@ -17,4 +17,5 @@
 //close map so we're back on the main display
 if (visibleMap) then {openMap false;};
 
+//open menu as dialog to force controls on it
 createDialog ["macp_adminMenu", true];

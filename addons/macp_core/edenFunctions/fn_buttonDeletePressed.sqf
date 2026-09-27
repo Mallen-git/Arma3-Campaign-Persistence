@@ -15,6 +15,7 @@
 */
 params [["_display", displayNull, [displayNull]]];
 
+//no display? how did we get here...
 if (isNull _display) exitWith {};
 
 _listBox = _display displayCtrl 1500;
@@ -22,6 +23,7 @@ _listBox = _display displayCtrl 1500;
 //get what was selected
 _selIndx = lbCurSel _listBox;
 
+//if nothing selected exit
 if (_selIndx isEqualTo -1) exitWith {};
 
 _selData = _listBox lbData _selIndx;
@@ -35,26 +37,31 @@ _workingHashmap = _allCampaignData;
 	_workingHashmap = _workingHashmap get _x;
 } forEach _filePath;
 
+//create the pop-up to delete the data
 _popUpDisplay = _display createDisplay "macp_campaignManagerConfirmDelete";
 _text = _popUpDisplay displayCtrl 5341;
 
+//set the text to reference actual data key
 _text ctrlSetText ("Are you sure you want to delete " + _selData + "?");
 
+//use these to take advantage of default exitcodes and keep variables local
 macp_globalExitCode = "NOTSET";
-
 _popUpDisplay displayAddEventHandler ["Unload",
 {
 	params ["_display", "_exitCode"];
 	macp_globalExitCode = _exitCode;
 }];
 
+//cannot use CBA in UI, wait in this spawn instead
 [_selData, _workingHashmap, _display] spawn {
 	params ["_selData", "_workingHashmap", "_display"];
 
 	waitUntil {macp_globalExitCode isNotEqualTo "NOTSET";};
 
+	//if exit code is not ok then leave
 	if (macp_globalExitCode isNotEqualTo 1) exitWith {};
 
+	//these options don't delete the item, just the stuff in the item
 	_itemDeleteOptions = ["currentInventory", "personalVault"];
 
 	//delete data

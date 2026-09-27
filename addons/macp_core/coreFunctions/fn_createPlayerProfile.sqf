@@ -15,32 +15,37 @@
 */
 params [["_requestedUID", "NOTSUPPLIED", [""]]];
 
+//always on server
 if (not isServer) exitWith {diag_log (text "MACP - ERROR: macp_core_fnc_createPlayerProfile ran on client, not server")};
 
+//need a UID to work with
 if (_requestedUID isEqualTo "NOTSUPPLIED") exitWith {diag_log (text "MACP - ERROR: Requested create player profile with no supplied UID")};
 
+//get the unit for the UID
 _requestedUIDUnit = _requestedUID call BIS_fnc_getUnitByUID;
 
+//get the players hashmap, if player already has a profile leave
 _allPlayerProfiles = macp_currentCampaignData get "players";
-
 if (_requestedUID in _allPlayerProfiles) exitWith {};
 
 _defaultKit = macp_currentCampaignData get "defaultKit";
 
+//if we are not using default kits simply get the current unit loadout
 if (not macp_defaultKit) then
 {
 	_defaultKit = getUnitLoadout player;
 };
 
+//define what the player profile looks like
 _defaultPlayerProfileArray = [
 	["lastUsedName", "NONEFOUND"],
 	["currentInventory", _defaultKit],
 	["previousInventorys", createHashMap],
 	["personalVault", [[],[],[],[]]]
 ];
-
 _playerProfile = createHashMapFromArray _defaultPlayerProfileArray;
 
+//if no unit assigned to UID throw warning, otherwise get the players name
 if (isNull _requestedUIDUnit) then
 {
 	diag_log (text "MACP - Warning: Requested new player profile without a player object, name will not be correct")
@@ -48,4 +53,5 @@ if (isNull _requestedUIDUnit) then
 	_playerProfile set ["lastUsedName", name _requestedUIDUnit];
 };
 
+//save the new player profile
 _allPlayerProfiles set [_requestedUID, _playerProfile];

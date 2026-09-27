@@ -14,11 +14,14 @@
 		call macp_core_fnc_showAdminMenu;
 */
 
+//if subject exists, presume other stuff exists and leave
 if (player diarySubjectExists "macp_adminMenu") exitWith {};
 
+//create diary link
 player createDiarySubject ["macp_adminMenu", "MACP - Admin Menu"];
 player createDiaryRecord ["macp_adminMenu", ["Admin Menu Link", "Click <execute expression='[] call macp_core_fnc_openAdminMenu;'>HERE</execute> to access admin menu!"]];
 
+//create zues ace interact link
 _statement = {
   [] call macp_core_fnc_openAdminMenu;
 };

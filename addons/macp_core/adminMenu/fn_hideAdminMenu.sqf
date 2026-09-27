@@ -14,6 +14,7 @@
 		call macp_core_fnc_hideAdminMenu;
 */
 
+//if subject exists, remove subject and ace interaction
 if (player diarySubjectExists "macp_adminMenu") then
 {
 	player removeDiarySubject "macp_adminMenu";

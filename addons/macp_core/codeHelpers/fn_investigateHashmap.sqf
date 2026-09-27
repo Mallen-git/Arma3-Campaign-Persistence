@@ -15,20 +15,24 @@
 	Examples:
 		[_hashmapIdentifiers, _newHashmap, _childrenHashmaps] call macp_core_fnc_investigateHashmap;
 */
-
-
 params[["_hashmapIdentifiers", objNull, [createHashMap]], ["_workingHashMap", objNull, [createHashMap]], ["_allHashmaps", false, [false]]];
 
 {
 	_key = _x;
 	_value = _y;
 
+	//if key is identified as a hashmap or we know all keys are hashmap
 	if (_key in _hashmapIdentifiers or _allHashmaps) then
 	{
+		//check hashmap is valid
 		if ([_value] call macp_core_fnc_validateHashmap) then
 		{
 			_newHashmap = createHashMapFromArray _value;
+
+			//value of hashmap identifiers determines whether all children are also hashmaps
 			_childrenHashmaps = _hashmapIdentifiers getOrDefault [_key, false];
+
+			//save work of hashmap created
 			_workingHashMap set [_key, _newHashmap];
 			[_hashmapIdentifiers, _newHashmap, _childrenHashmaps] call macp_core_fnc_investigateHashmap;
 		};

@@ -15,7 +15,7 @@
 */
 params[["_input", "", [""]]];
 
-
+//used to check the value of an entry is the correct type and length for arrays
 _correctDataChecking = createHashMapFromArray [
 	["key", ["STRING"]],
 	["players", ["HASHMAP"]],
@@ -29,6 +29,7 @@ _correctDataChecking = createHashMapFromArray [
 	["personalVault", ["ARRAY", 4, "VAULT"]]
 ];
 
+//used to make sure each hashmap has the correct items in it
 _correctDataLocation = createHashMapFromArray [
 	["root", ["key", "players", "ver", "defaultKit"]],
 	["players", ["ALLHASHMAPS", "playerProfile"]],
@@ -37,7 +38,13 @@ _correctDataLocation = createHashMapFromArray [
 	["prevInv", ["previousInventory", "storageReason"]]
 ];
 
+//used to identify which keys are full of only hashmaps regardless of name
+_hashmapIdentifiers = createHashMapFromArray [
+	["players", true],
+	["previousInventorys", false]
+];
 
+//setup variables for string checking
 _characters = _input splitString "";
 
 _firstBracketHit = false;
@@ -50,26 +57,28 @@ _previousUsefulCharacter = "[";
 
 _errorFound = "None";
 
+//iterate through input character by character, regex does not function due to recursive arrays being present and Armas regex engine not being able to handle it
 {
+	//if item is whitespace continue (toSimpleArray can handle this)
 	if (_x isEqualTo " ") then {continue;};
+
+	//save this character as the last one checked
 	_previousUsefulCharacterUsing = _previousUsefulCharacter;
 	_previousUsefulCharacter = _x;
 
+	//if we've closed more brackets than we opened something went wrong, throw error
 	if (_bracketBudget <= 0) then
 	{
 		_errorFound = "Input closes more brackets than it has opened at character " + str(_forEachIndex + 1);
 		break;
 	};
 
+	//make sure we start with an open bracket, if we don't throw an error
 	if (not _firstBracketHit) then
 	{
 		if (_x isEqualTo "[") then
 		{
 			_firstBracketHit = true;
-			continue;
-		};
-		if (_x isEqualTo " ") then
-		{
 			continue;
 		};
 		_errorFound = "Input does not start with an open square bracket";
@@ -79,6 +88,7 @@ _errorFound = "None";
 	//check if we're in a string, if we are we don't care whats in here
 	if (_inString) then
 	{
+		//escape string if a double quote is found (this could fail if quotes are used by a string anywhere, will need fixing potentially)
 		if (_x isEqualTo '"') then
 		{
 			_inString = false;
@@ -89,6 +99,7 @@ _errorFound = "None";
 		};
 	};
 
+	//if we are currently writing a number we can keep watching that number until it is finished by a comma
 	if (_inNumber) then
 	{
 		if (_x in ["0","1","2","3","4","5","6","7","8","9"]) then
@@ -101,7 +112,7 @@ _errorFound = "None";
 		};
 	};
 
-
+	//we are expecting a comma or an end bracket as the item in the array is finished
 	if (_expectingComma) then
 	{
 		if (_x isEqualTo "]") then
@@ -119,13 +130,17 @@ _errorFound = "None";
 		break;
 	};
 
+	//we are expecting an item in the array as a comma has just passed or an open bracket has just passed
 	if (_expectingItem) then
 	{
+		//if its an open bracket thats fine, just increase bracket budget
 		if (_x isEqualTo "[") then
 		{
 			_bracketBudget = _bracketBudget + 1;
 			continue;
 		};
+
+		//check if its an empty array
 		if ((_x isEqualTo "]") and (_previousUsefulCharacterUsing isEqualTo "[")) then
 		{
 			_bracketBudget = _bracketBudget - 1;
@@ -133,6 +148,8 @@ _errorFound = "None";
 			_expectingItem = false;
 			continue;
 		};
+
+		//its a string, start tracking that
 		if (_x isEqualTo '"') then
 		{
 			_expectingComma = false;
@@ -140,15 +157,21 @@ _errorFound = "None";
 			_inString = true;
 			continue;
 		};
+
+		//its a number, start tracking that
 		if (_x in ["0","1","2","3","4","5","6","7","8","9"]) then
 		{
 			_inNumber = true;
 			continue;
 		};
+
+		//not a string, array, or number, could fail if other variable types are used
 		_errorFound = "Array, String, or Number expected at character " + str(_forEachIndex + 1) + ", found """ + _x + """ instead";
 		break;
 	};
 } forEach _characters;
+
+//if no errors were found make sure every bracket has been closed exactly
 if (_errorFound isEqualTo "None") then
 {
 	if (_bracketBudget > 0) then
@@ -161,75 +184,104 @@ if (_errorFound isEqualTo "None") then
 	};
 };
 
+//if error found get out of there and show user
 if (_errorFound isNotEqualTo "None") exitWith {_errorFound;};
 
 //string found is good, put it into an array
 _workingArray = parseSimpleArray _input;
 
-_hashmapIdentifiers = createHashMapFromArray [["players", true], ["previousInventorys", false]];
+//check array is a valid hashmap, if yes create that hashmap
 if (not ([_workingArray] call macp_core_fnc_validateHashmap)) exitWith {"Input data is not in the form of a hashmap";};
 _workingHashMap = createHashMapFromArray _workingArray;
 
+//fill out the hashmap with child hashmaps
 [_hashmapIdentifiers, _workingHashMap, false] call macp_core_fnc_investigateHashmap;
 
+//setup an error code that can be accessed anywhere in the following recursive function
 macp_globalErrorCode = "";
 
 _checkHashCorrect = {
 	params["_checkHashCorrect", "_correctDataChecking", "_correctDataLocation", "_currentHashmap", "_levelName"];
 
-	test = _this;
+	//get all items expected in this hashmap
 	_expectedItems = _correctDataLocation get _levelName;
 
+	//if all values are hashmaps set the wildcard variable to true
 	_wildcardHashmap = false;
 	if ((_expectedItems select 0) isEqualTo "ALLHASHMAPS") then
 	{
 		_wildcardHashmap = true;
 	};
 
+	//for each of the current hashmap
 	{
+		//if all values are hashmaps
 		if (_wildcardHashmap) then
 		{
-			_workingLevelName = _expectedItems select 1;
+			//if value is not a hashmap thats an issue
 			if ((typeName _y) isNotEqualTo "HASHMAP") exitWith {macp_globalErrorCode = ('"' + _x + '" should be a hashmap, it is actually a ' + (typeName _y));true;};
+
+			//next working level is stored in the expected items variable, grab it
+			_workingLevelName = _expectedItems select 1;
 			_result = [_checkHashCorrect, _correctDataChecking, _correctDataLocation, _y, _workingLevelName] call _checkHashCorrect;
+
+			//if recursion found an error also throw an error and end early
 			if (_result) exitWith {true;};
 		};
 
+		//if key not in the expected items its unexpected and can be thrown
 		if (not (_x in _expectedItems)) exitWith {macp_globalErrorCode = ('"' + _x + '" should not be in hashmap ' + _levelName);true;};
 
+		//delete key from expected items to detect if something is missing from this level
 		_expectedItems deleteAt (_expectedItems find _x);
 
+		//get the correct datatype expected for keys value, if none found throw an error
 		_keyDataType = _correctDataChecking getOrDefault [_x, "NONEFOUND"];
 		if (_keyDataType isEqualTo "NONEFOUND") exitWith {macp_globalErrorCode = ('cannot find the correct data type for "' + _x + '"');true;};
 
+		//make sure value type is as expected, or error
 		_typeName = _keyDataType select 0;
 		if ((typeName _y) isNotEqualTo _typeName) exitWith {macp_globalErrorCode = ('"' + _x + '" should be a ' + _typeName + ', it is actually a ' + (typeName _y));true;};
 
 		switch (_typeName) do
 		{
+			//if its a hashmap do some recursion
 			case "HASHMAP": {
 				_result = [_checkHashCorrect, _correctDataChecking, _correctDataLocation, _y, _x] call _checkHashCorrect;
 				if (_result) exitWith {true;};
 			};
+
 			case "STRING": {};
+
+			//if its an array make sure its size is correct, if its not this will be caught and thrown
 			case "ARRAY": {
 				_size = _keyDataType select 1;
 				if ((count _y) isNotEqualTo _size) exitWith {macp_globalErrorCode = ('"' + _x + '" should be an array with size' + str(_size) + ' it is actually size ' + str(count _y));true;};
 			};
+
+			//if none of the above somethings wrong
 			default {if (true) exitWith {macp_globalErrorCode = ('"' + _x + '" is not a Hashmap, String, or Array, it should be one of these');true;};};
 		};
 	} forEach _currentHashmap;
 
 	if (not _wildcardHashmap) then
 	{
+		//make sure all expected items have been found, if not throw an error
 		if (count _expectedItems isNotEqualTo 0) exitWith {macp_globalErrorCode = ('Hashmap "' + _levelName + '" is missing keys: ' + str(_expectedItems));true;};
 	};
 
+	//no errors, exit with false to signify that
 	false;
 };
 
+//check data position and value type, if theres an error output the error code
 _result = [_checkHashCorrect, _correctDataChecking, _correctDataLocation, _workingHashMap, "root"] call _checkHashCorrect;
-if (_result) exitWith {macp_globalErrorCode;};
 
+//clean up global variable that is no longer needed
+_temp = macp_globalErrorCode;
 macp_globalErrorCode = nil;
+
+//if there was an error show to player
+if (_result) exitWith {_temp;};
+
 _workingHashMap;

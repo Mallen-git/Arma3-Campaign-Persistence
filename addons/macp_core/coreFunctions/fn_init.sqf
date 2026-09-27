@@ -2,11 +2,15 @@ params [
 	["_logic", objNull, [objNull]]
 ];
 
+//only run on server
 if (isServer) then {
+	//get all campaign data saved on server
 	_allCampaignData = profileNamespace getVariable ["macp_serverAllCampaignData", createHashMap];
 
+	//get the raw campaign data assigned to variable
 	_rawCampaignData = _logic getVariable ["macp_campaignData", "NOCAMPAIGNSFOUNDRIP"];
 
+	//if no campaign data found throw error and tell clients not to continue init
 	if (_rawCampaignData isEqualTo "NOCAMPAIGNSFOUNDRIP") exitWith
 	{
 		diag_log (text "MACP - ERROR: No raw campaign data found, persistance is not active");
@@ -14,14 +18,17 @@ if (isServer) then {
 		publicVariable "macp_failedInit";
 	};
 
+	//we have data, tell clients to continue init as requested
 	macp_failedInit = false;
 	publicVariable "macp_failedInit";
 
 	macp_currentCampaignData = _rawCampaignData;
 
+	//check if we have the current key already saved on the server
 	_key = macp_currentCampaignData get "key";
 	_autosavedCampaignData = _allCampaignData getOrDefault [_key, macp_currentCampaignData];
 
+	//if it is, save it as a backup incase data was lost on client and this is a recovery effort
 	if (_autosavedCampaignData isNotEqualTo macp_currentCampaignData) then
 	{
 		_allCampaignData set [(_key + ".backup"), _autosavedCampaignData];
@@ -31,11 +38,13 @@ if (isServer) then {
 
 	macp_personalVaultLists = createHashMap;
 
+	//when mission is ended make sure all data is saved and distributed to clients
 	addMissionEventHandler ["Ended", {
 		call macp_core_fnc_saveAllKitsAndVaults;
 		publicVariable "macp_currentCampaignData";
 	}];
 
+	//when a player disconnects create a snapshot of their loadout
 	addMissionEventHandler ["HandleDisconnect", {
 		params ["_unit", "_id", "_uid", "_name"];
 		[_uid, _unit] call macp_core_fnc_saveToCurrentInventory;
@@ -43,7 +52,7 @@ if (isServer) then {
 		false;
 	}];
 
-	//autosave every 30s after 5 seconds of grace at mission start (so we don't accidentally save the editor kit)
+	//autosave after 5 seconds of grace at mission start (so we don't accidentally save the editor kit)
 	[{
 		[{
 			call macp_core_fnc_saveAllKitsAndVaults;
@@ -60,6 +69,7 @@ if (isServer) then {
 		saveProfileNamespace;
 	};
 
+	//when an admin logs in or logs out tell them to either show or hide the admin menu
 	addMissionEventHandler ["OnUserAdminStateChanged", {
 		params ["_networkId", "_loggedIn", "_votedIn"];
 		_userInfo = getUserInfo _networkId;
@@ -73,13 +83,17 @@ if (isServer) then {
 	}];
 };
 
-//if not the server don't need to pickup loadouts
+//if not a dedi server don't need to pickup loadouts
 if (not hasInterface) exitWith {};
 
 [{
+	//wait until we get response from server before init
 	not (isNil "macp_failedInit");
 }, {
+	//we failed init on server, abandon init
 	if (macp_failedInit) exitWith {diag_log (text "MACP - ERROR: No raw campaign data found, persistance is not active");};
+
+	//used to check if player is respawning on start (don't give default kit)
 	mcap_initialRespawn = false;
 
 	//create player profile if it doesn't exist
@@ -160,9 +174,12 @@ if (not hasInterface) exitWith {};
 		};
 	}];
 
+	//whenever server sends us an updated campaign data decide what to do with it
 	"macp_currentCampaignData" addPublicVariableEventHandler {
 		_value = _this select 1;
 		_saveValue = false;
+
+		//depending on CBA settings choice either save or don't save
 		switch (macp_saveChoice) do
 		{
 			//only admin
@@ -190,11 +207,13 @@ if (not hasInterface) exitWith {};
 
 		if (not _saveValue) exitWith {};
 
+		//save the campaign data for the next mission
 		_allCampaignData = profileNamespace getVariable ["macp_clientAllCampaignData", createHashMap];
 		_key = _value get "key";
 		_allCampaignData set [_key, _value];
 		saveProfileNamespace;
 	};
 }, [], 10, {
+	//we have somehow timed out, this means the server has not inited in 10 seconds, server must be either overloaded or crashed, shouldn't happen but is a failsafe
 	diag_log (text "MACP - ERROR: Server failed to init within 10 seconds, presuming catastrophic failure");
 }] call CBA_fnc_waitUntilAndExecute;

@@ -18,12 +18,17 @@ params[["_input", [], [[]]]];
 _validArray = true;
 
 {
+	//if not an array don't test further, somethings wrong
 	if (typeName _x isNotEqualTo "ARRAY") then
 	{
 		_validArray = false;
 		break;
 	};
+
+	//check how many items in array
 	_count = count _x;
+
+	//if not two then not a valid hashmap entry
 	if (_count isNotEqualTo 2) then
 	{
 		_validArray = false;

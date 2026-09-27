@@ -15,26 +15,30 @@
 	Examples:
 		["123456789", "DEATH"] call macp_core_fnc_saveToPreviousInventorys;
 */
-
 params [["_requestedUID", "NOTSUPPLIED", [""]], ["_storageReason", "UNKNOWN", [""]], ["_overideUnit", objNull, [objNull]]];
 
+//always on server
 if (not isServer) exitWith {diag_log (text "MACP - ERROR: macp_core_fnc_saveToPreviousInventorys ran on client, not server")};
 
+//need a UID to work with
 if (_requestedUID isEqualTo "NOTSUPPLIED") exitWith {diag_log (text "MACP - ERROR: Requested save to previous inventorys with no supplied UID")};
 
+//get the unit for the UID
 _requestedUIDUnit = _requestedUID call BIS_fnc_getUnitByUID;
 
+//if we are overriding the unit to save the current loadout from then do so
 if (not isNull _overideUnit) then
 {
 	_requestedUIDUnit = _overideUnit;
 };
 
+//can't save the loadout of someone without a unit, because they have no loadout
 if (isNull _requestedUIDUnit) exitWith {diag_log (text "MACP - ERROR: Requested save to previous inventorys with UID that does not point to a unit")};
 
-
+//get players inventory
 _inventoryToStore = getUnitLoadout _requestedUIDUnit;
 
-//get players weapons that fly off them on death
+//get players weapons that fly off them on death and add them to inventory to store
 if (_storageReason isEqualTo "DEATH") then
 {
 	_weaponHolders = getCorpseWeaponholders _requestedUIDUnit;

@@ -15,22 +15,31 @@
 */
 params [["_display", displayNull, [displayNull]]];
 
+//no display? how did we get here...
+if (isNull _display) exitWith {};
+
 _textCtrl = _display displayCtrl 1006;
 _errorCtrl = _display displayCtrl 1007;
 
+//get input text
 _text = ctrlText _textCtrl;
 
+//check the import is valid campaign data
 _output = [_text] call macp_core_fnc_validateStringInput;
 
-if ((typeName _output) isEqualTo "STRING") exitWith {_errorCtrl ctrlSetText ("*** ERROR *** " + _output); macp_globalErrorCode = nil;};
+//if it is a string then its not valid data and in fact an error, show to user
+if ((typeName _output) isEqualTo "STRING") exitWith {_errorCtrl ctrlSetText ("*** ERROR *** " + _output);};
 
 _allCampaignData = profileNamespace getVariable ["macp_clientAllCampaignData", createHashMap];
 
 _key = _output get "key";
 _workingKey = _key;
 _errorSet = false;
+
+//if key is already in the data then the imported is a duplicate, handle this
 if (_key in _allCampaignData) then
 {
+	//keep going through copy numbers until an unused one is found
 	_counter = 1;
 	while { _workingKey in _allCampaignData } do
 	{

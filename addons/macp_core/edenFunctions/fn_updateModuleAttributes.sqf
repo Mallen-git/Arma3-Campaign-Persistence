@@ -17,14 +17,23 @@
 //quick note this is a terible way of doing this, ideally set3DENAttribute would be used, however this fails due to Value not allowed to be a hashmap, maybe it'll get fixed eventually
 
 spawn {
-	_currentCameraPos = getPos get3DENCamera;
+	//get all campaign manager modules
 	_all3denSystems = (all3DENEntities select 3);
 	_campaignManagers = _all3denSystems select {typeOf _x isEqualTo "macp_campaignManager"};
+
 	{
+		//make the module selected
 		set3DENSelected [_x];
+
+		//open its attributes
 		do3DENAction "OpenAttributes";
+
+		//wait until its attributes window actually opens
 		waitUntil {not (isNull(findDisplay 315))};
+
+		//immediately close it
 		(findDisplay 315) closeDisplay 1;
 	} forEach _campaignManagers;
+	//cannot set selected to nothing after this, for some reason this causes a hang when called on mission load
 };
 

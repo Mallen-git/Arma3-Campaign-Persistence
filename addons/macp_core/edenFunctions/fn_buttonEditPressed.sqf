@@ -15,6 +15,7 @@
 */
 params [["_display", displayNull, [displayNull]]];
 
+//no display? how did we get here...
 if (isNull _display) exitWith {};
 
 _listBox = _display displayCtrl 1500;
@@ -22,6 +23,7 @@ _listBox = _display displayCtrl 1500;
 //get what was selected
 _selIndx = lbCurSel _listBox;
 
+//if nothing selected exit
 if (_selIndx isEqualTo -1) exitWith {};
 
 _selData = _listBox lbData _selIndx;
@@ -35,33 +37,45 @@ _workingHashmap = _allCampaignData;
 	_workingHashmap = _workingHashmap get _x;
 } forEach _filePath;
 
+//these items can be opened in the ace arsenal for editing
 _arsenalItems = ["currentInventory", "defaultKit", "previousInventory"];
 
+//if the selected data is an aresnal item
 if (_selData in _arsenalItems) then
 {
+	//global variable to detect when the aresenal is closed
 	macp_arsenalClosed = false;
+
+	//don't show we're creating the dummy unit to aresenal on to
 	ignore3DENHistory {
 		macp_dummy = create3DENEntity ["Object", "B_Soldier_F", [0,0,100000]];
 	};
+
+	//get the current kit assigned to the key
 	_value = _workingHashmap get _selData;
 
 	[_display, _value] spawn
 	{
 		params ["_display", "_value"];
-
+		//close the UI
 		_display closeDisplay 1;
 
+		//wait until we are back in the eden interface
 		waitUntil {not (isNull (findDisplay 313))};
 
+		//set the dummys loadout to the current value
 		macp_dummy setUnitLoadout _value;
 
+		//set the dummy as selected for ace to save the kit to after editing
 		ignore3DENHistory {
 			set3DENSelected [macp_dummy];
 		};
 
+		//open the aresenal for the dummy
 		[macp_dummy, macp_dummy, true] call ace_arsenal_fnc_openBox;
 	};
 
+	//detect when the aresenal is closed
 	_ehID = ["ace_arsenal_displayClosed", {macp_arsenalClosed = true;}] call CBA_fnc_addEventHandler;
 
 	[_ehID, _workingHashmap, _selData, _filePath] spawn
@@ -70,25 +84,29 @@ if (_selData in _arsenalItems) then
 
 		waitUntil {macp_arsenalClosed};
 
+		//get the loadout saved to the dummy and save it to the key
 		_unitLoadout = getUnitLoadout macp_dummy;
-
 		_workingHashMap set [_selData, _unitLoadout];
 
+		//delete the dummy
 		ignore3DENHistory {
 			delete3DENEntities [macp_dummy];
 		};
 
+		//remove the event handeler and clean up global variables
 		["ace_arsenal_displayClosed", _ehID] call CBA_fnc_removeEventHandler;
 		macp_arsenalClosed = nil;
 		macp_dummy = nil;
 
+		//open the campaign manager back to the place it was previously
 		[_filePath] call macp_core_fnc_openCampaignManager;
 	};
 
+//selected data is NOT an aresenal item
 } else {
 	_value = _workingHashmap get _selData;
 
-	//if its a hashmap we just want to go to its folder structure
+	//if its a hashmap we just want to go to its folder structure, not actually edit it
 	if (typeName _value isEqualTo "HASHMAP") exitWith
 	{
 		_filePath pushBack _selData;
@@ -96,9 +114,10 @@ if (_selData in _arsenalItems) then
 		[_display] call macp_core_fnc_updateFileBrowser;
 	};
 
-	//if they are changing campaign key?
+	//if they are changing campaign key handle it differently as many things need to happen
 	if (_selData isEqualTo "key") then
 	{
+		//open the display to change a single value and fill in the needed text and default values
 		_popUpDisplay = _display createDisplay "macp_campaignManagerSingleValuePopup";
 		_title = _popUpDisplay displayCtrl 5340;
 		_text = _popUpDisplay displayCtrl 5341;
@@ -108,6 +127,7 @@ if (_selData in _arsenalItems) then
 		_text ctrlSetText "New campaign key?";
 		_txtValue ctrlSetText _value;
 
+		//used to preserve locality, get the new value and exit code when pop-up closes
 		macp_globalExitCode = "NOTSET";
 		macp_globalValue = "";
 		_popUpDisplay displayAddEventHandler ["Unload",
@@ -124,14 +144,18 @@ if (_selData in _arsenalItems) then
 
 			waitUntil {macp_globalExitCode isNotEqualTo "NOTSET"};
 
+			//if we didn't confirm them leave
 			if (macp_globalExitCode isNotEqualTo 1) exitWith {};
 
+			//get all campaign data
 			_allCampaignData = profileNamespace getVariable ["macp_clientAllCampaignData", createHashMap];
 
+			//set the new key as needed, delete the old entry as no longer needed
 			_allCampaignData set [macp_globalValue, _workingHashmap];
 			_workingHashmap set ["key", macp_globalValue];
 			_allCampaignData deleteAt _value;
 
+			//cleanup global variables
 			macp_globalExitCode = nil;
 			macp_globalValue = nil;
 			saveProfileNamespace;

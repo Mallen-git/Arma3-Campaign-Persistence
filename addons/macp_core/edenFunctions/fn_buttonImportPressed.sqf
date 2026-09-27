@@ -15,6 +15,7 @@
 */
 params [["_display", displayNull, [displayNull]]];
 
+//no display? how did we get here...
 if (isNull _display) exitWith {};
 
 _display createDisplay "macp_campaignManagerImport";
