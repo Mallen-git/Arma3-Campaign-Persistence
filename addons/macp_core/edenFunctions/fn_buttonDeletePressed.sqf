@@ -29,7 +29,7 @@ if (_selIndx isEqualTo -1) exitWith {};
 _selData = _listBox lbData _selIndx;
 
 //get current folder
-_filePath = _display getVariable ['macp_filePath', []];
+_filePath = _display getVariable ["macp_filePath", []];
 _allCampaignData = profileNamespace getVariable ["macp_clientAllCampaignData", createHashMap];
 _workingHashmap = _allCampaignData;
 
@@ -61,7 +61,7 @@ _popUpDisplay displayAddEventHandler ["Unload",
 	//if exit code is not ok then leave
 	if (macp_globalExitCode isNotEqualTo 1) exitWith {};
 
-	//these options don't delete the item, just the stuff in the item
+	//these options dont delete the item, just the stuff in the item
 	_itemDeleteOptions = ["currentInventory", "personalVault"];
 
 	//delete data

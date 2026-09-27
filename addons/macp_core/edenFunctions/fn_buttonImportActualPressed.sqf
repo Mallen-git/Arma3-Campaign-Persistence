@@ -46,10 +46,10 @@ if (_key in _allCampaignData) then
 		_workingKey = (_key + ".copy." + str(_counter));
 		_counter = _counter + 1;
 	};
-	_errorCtrl ctrlSetText ('*** WARNING *** Campaign with this key already exists, saved as "' + _workingKey + '"');
+	_errorCtrl ctrlSetText ("*** WARNING *** Campaign with this key already exists, saved as """ + _workingKey + """");
 	_output set ["key", _workingKey];
 } else {
-	_errorCtrl ctrlSetText ('Campaign imported and saved as "' + _workingKey + '"');
+	_errorCtrl ctrlSetText ("Campaign imported and saved as """ + _workingKey + """");
 };
 
 _allCampaignData set [_workingKey, _output];

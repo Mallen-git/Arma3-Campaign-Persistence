@@ -14,7 +14,7 @@
 		call macp_core_fnc_openAdminMenu;
 */
 
-//close map so we're back on the main display
+//close map so were back on the main display
 if (visibleMap) then {openMap false;};
 
 //open menu as dialog to force controls on it

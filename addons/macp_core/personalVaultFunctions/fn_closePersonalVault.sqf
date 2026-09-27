@@ -18,7 +18,7 @@ params [["_vault", objNull, [objNull]]];
 //always on server
 if (not isServer) exitWith {diag_log (text "MACP - ERROR: macp_core_fnc_closePersonalVault ran on client, not server")};
 
-//cannot close a vault that doesn't exist
+//cannot close a vault that doesnt exist
 if (isNull _vault) exitWith {diag_log (text "MACP - ERROR: Requested personal vault closing with no supplied vault")};
 
 //check who owns the vault

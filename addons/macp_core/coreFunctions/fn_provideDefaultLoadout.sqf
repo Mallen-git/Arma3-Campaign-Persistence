@@ -31,7 +31,7 @@ if (not isNull _overideUnit) then
 	_requestedUIDUnit = _overideUnit;
 };
 
-//can't give the loadout to someone without a unit
+//cant give the loadout to someone without a unit
 if (isNull _requestedUIDUnit) exitWith {diag_log (text "MACP - ERROR: Requested default loadout with UID that does not point to a unit")};
 
 //get default kit

@@ -63,4 +63,4 @@ _vault setVehiclePosition [getPos _requestedUIDUnit, [], 0, "CAN_COLLIDE"];
 _vault attachTo [_requestedUIDUnit];
 
 //tell player the vault is ready to open
-[[_vault], macp_core_fnc_clientToldToOpenPersonalVault] remoteExec ['call', _requestedUIDUnit];
+[[_vault], macp_core_fnc_clientToldToOpenPersonalVault] remoteExec ["call", _requestedUIDUnit];

@@ -58,7 +58,7 @@ _listBox = _display displayCtrl 1500;
 _filePathText = _display displayCtrl 1002;
 
 //get the file path
-_filePath = _display getVariable ['macp_filePath', []];
+_filePath = _display getVariable ["macp_filePath", []];
 
 //get all the campaign data to traverse through
 _allCampaignData = profileNamespace getVariable ["macp_clientAllCampaignData", createHashMap];
@@ -77,14 +77,14 @@ _playerUIDNext = false;
 	//get display name of folder
 	_displayName = _displayNames getOrDefault [_x, _x];
 
-	//if we're expected the player UID make it look pretty to users organicaly
+	//if were expected the player UID make it look pretty to users organicaly
 	if (_playerUIDNext) then
 	{
 		_displayName = (_workingHashMap get "lastUsedName") + " (" + _x + ")";
 	};
 
 	//add the >> to signify the next item
-	_outputText = _outputText + _displayName + ' >> ';
+	_outputText = _outputText + _displayName + " >> ";
 
 	//if the next folder is for players let the next iteration know
 	if (_x isEqualTo "players") then {_playerUIDNext = true;} else {_playerUIDNext = false;};
@@ -111,7 +111,7 @@ if ((lbCurSel _listBox) isNotEqualTo -1) then
 	_data = _workingHashMap getOrDefault [_selectedDataKey, "No Data Found"];
 };
 
-//if the data is a hashmap don't show anything
+//if the data is a hashmap dont show anything
 if (typeName _data isEqualTo "HASHMAP") then
 {
 	_data = "";

@@ -52,7 +52,7 @@ if (isServer) then {
 		false;
 	}];
 
-	//autosave after 5 seconds of grace at mission start (so we don't accidentally save the editor kit)
+	//autosave after 5 seconds of grace at mission start (so we dont accidentally save the editor kit)
 	[{
 		[{
 			call macp_core_fnc_saveAllKitsAndVaults;
@@ -61,7 +61,7 @@ if (isServer) then {
 		}, macp_autoSaveTime] call CBA_fnc_addPerFrameHandler;
 	}, [], 4.2649] call CBA_fnc_waitAndExecute;
 
-	//if player is server then autosave isn't needed, simply link the data correctly and go from there
+	//if player is server then autosave isnt needed, simply link the data correctly and go from there
 	if (hasInterface) then
 	{
 		_allCampaignData = profileNamespace getVariable ["macp_clientAllCampaignData", createHashMap];
@@ -76,14 +76,14 @@ if (isServer) then {
 		_machineNetworkID = _userInfo select 1;
 		if (_loggedIn) then
 		{
-			[[], macp_core_fnc_showAdminMenu] remoteExec ['call', _machineNetworkID];
+			[[], macp_core_fnc_showAdminMenu] remoteExec ["call", _machineNetworkID];
 		} else {
-			[[], macp_core_fnc_hideAdminMenu] remoteExec ['call', _machineNetworkID];
+			[[], macp_core_fnc_hideAdminMenu] remoteExec ["call", _machineNetworkID];
 		};
 	}];
 };
 
-//if not a dedi server don't need to pickup loadouts
+//if not a dedi server dont need to pickup loadouts
 if (not hasInterface) exitWith {};
 
 [{
@@ -93,17 +93,17 @@ if (not hasInterface) exitWith {};
 	//we failed init on server, abandon init
 	if (macp_failedInit) exitWith {diag_log (text "MACP - ERROR: No raw campaign data found, persistance is not active");};
 
-	//used to check if player is respawning on start (don't give default kit)
+	//used to check if player is respawning on start (dont give default kit)
 	mcap_initialRespawn = false;
 
-	//create player profile if it doesn't exist
-	[[getPlayerUID player], macp_core_fnc_createPlayerProfile] remoteExec ['call', 2];
+	//create player profile if it doesnt exist
+	[[getPlayerUID player], macp_core_fnc_createPlayerProfile] remoteExec ["call", 2];
 
 	//request server to give me loadout i should have
-	[[getPlayerUID player], macp_core_fnc_provideCurrentLoadout] remoteExec ['call', 2];
+	[[getPlayerUID player], macp_core_fnc_provideCurrentLoadout] remoteExec ["call", 2];
 
 	//init personal vault
-	[[getPlayerUID player], macp_core_fnc_initPersonalVault] remoteExec ['call', 2];
+	[[getPlayerUID player], macp_core_fnc_initPersonalVault] remoteExec ["call", 2];
 
 	//if admin, show admin menu
 	if (((call BIS_fnc_admin) > 0) or isServer) then
@@ -140,7 +140,7 @@ if (not hasInterface) exitWith {};
 	};
 	_statement =
 	{
-		[[getPlayerUID player], macp_core_fnc_accessPersonalVault] remoteExec ['call', 2];
+		[[getPlayerUID player], macp_core_fnc_accessPersonalVault] remoteExec ["call", 2];
 	};
 	_action = ["openPersonalVault", "Open Personal Vault", "\a3\ui_f\data\igui\cfg\simpletasks\types\Container_ca.paa", _statement, _condition] call ace_interact_menu_fnc_createAction;
 	[player, 1, ["ACE_SelfActions"], _action] call ace_interact_menu_fnc_addActionToObject;
@@ -151,11 +151,11 @@ if (not hasInterface) exitWith {};
 		if (mcap_initialRespawn) then
 		{
 			mcap_initialRespawn = false;
-			[[getPlayerUID player], macp_core_fnc_provideCurrentLoadout] remoteExec ['call', 2];
+			[[getPlayerUID player], macp_core_fnc_provideCurrentLoadout] remoteExec ["call", 2];
 		} else {
 			if (macp_defaultKit) then
 			{
-				[[getPlayerUID player], macp_core_fnc_provideDefaultLoadout] remoteExec ['call', 2];
+				[[getPlayerUID player], macp_core_fnc_provideDefaultLoadout] remoteExec ["call", 2];
 			};
 		};
 	}];
@@ -167,7 +167,7 @@ if (not hasInterface) exitWith {};
 		{
 			[{
 				params ["_unit"];
-				[[getPlayerUID player, "DEATH", _unit], macp_core_fnc_saveToPreviousInventorys] remoteExec ['call', 2];
+				[[getPlayerUID player, "DEATH", _unit], macp_core_fnc_saveToPreviousInventorys] remoteExec ["call", 2];
 			}, [_unit], 0.1] call CBA_fnc_waitAndExecute;
 		} else {
 			mcap_initialRespawn = true;
@@ -179,7 +179,7 @@ if (not hasInterface) exitWith {};
 		_value = _this select 1;
 		_saveValue = false;
 
-		//depending on CBA settings choice either save or don't save
+		//depending on CBA settings choice either save or dont save
 		switch (macp_saveChoice) do
 		{
 			//only admin
@@ -214,6 +214,6 @@ if (not hasInterface) exitWith {};
 		saveProfileNamespace;
 	};
 }, [], 10, {
-	//we have somehow timed out, this means the server has not inited in 10 seconds, server must be either overloaded or crashed, shouldn't happen but is a failsafe
+	//we have somehow timed out, this means the server has not inited in 10 seconds, server must be either overloaded or crashed, shouldnt happen but is a failsafe
 	diag_log (text "MACP - ERROR: Server failed to init within 10 seconds, presuming catastrophic failure");
 }] call CBA_fnc_waitUntilAndExecute;

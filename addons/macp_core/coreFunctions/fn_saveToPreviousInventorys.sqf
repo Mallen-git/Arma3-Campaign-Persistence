@@ -32,7 +32,7 @@ if (not isNull _overideUnit) then
 	_requestedUIDUnit = _overideUnit;
 };
 
-//can't save the loadout of someone without a unit, because they have no loadout
+//cant save the loadout of someone without a unit, because they have no loadout
 if (isNull _requestedUIDUnit) exitWith {diag_log (text "MACP - ERROR: Requested save to previous inventorys with UID that does not point to a unit")};
 
 //get players inventory

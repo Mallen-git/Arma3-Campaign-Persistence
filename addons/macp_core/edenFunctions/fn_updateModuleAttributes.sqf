@@ -14,7 +14,7 @@
 		[] call macp_core_fnc_updateModuleAttributes;
 */
 
-//quick note this is a terible way of doing this, ideally set3DENAttribute would be used, however this fails due to Value not allowed to be a hashmap, maybe it'll get fixed eventually
+//quick note this is a terible way of doing this, ideally set3DENAttribute would be used, however this fails due to Value not allowed to be a hashmap, maybe itll get fixed eventually
 
 spawn {
 	//get all campaign manager modules

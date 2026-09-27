@@ -14,9 +14,9 @@
 		[] call macp_core_fnc_destroyPreviewCam;
 */
 
-if (isNil 'macp_rttCamera') exitWith {};
+if (isNil "macp_rttCamera") exitWith {};
 
-macp_rttCamera cameraEffect ['terminate','back'];
+macp_rttCamera cameraEffect ["terminate","back"];
 
 camDestroy macp_rttCamera;
 macp_rttCamera = nil;

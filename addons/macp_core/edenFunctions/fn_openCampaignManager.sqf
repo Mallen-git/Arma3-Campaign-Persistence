@@ -22,7 +22,7 @@ _display = (findDisplay 313) createDisplay "macp_campaignManagerToolDialog";
 //if a custom file path has been set then open on that file path
 if (_customFilePath isNotEqualTo objNull) then
 {
-	_display setVariable ['macp_filePath', _customFilePath];
+	_display setVariable ["macp_filePath", _customFilePath];
 };
 
 [_display] call macp_core_fnc_updateFileBrowser;

@@ -18,7 +18,7 @@ params[["_input", [], [[]]]];
 _validArray = true;
 
 {
-	//if not an array don't test further, somethings wrong
+	//if not an array dont test further, somethings wrong
 	if (typeName _x isNotEqualTo "ARRAY") then
 	{
 		_validArray = false;

@@ -19,7 +19,7 @@ params [["_display", displayNull, [displayNull]]];
 if (isNull _display) exitWith {};
 
 //get current folder
-_filePath = _display getVariable ['macp_filePath', []];
+_filePath = _display getVariable ["macp_filePath", []];
 _allCampaignData = profileNamespace getVariable ["macp_clientAllCampaignData", createHashMap];
 _workingHashmap = _allCampaignData;
 _workingDirName = "root";
@@ -58,7 +58,7 @@ switch (_workingDirName) do
 			_text = _display displayCtrl 5342;
 			_text = ctrlText _text;
 
-			//if key is empty don't save this
+			//if key is empty dont save this
 			if (_text isEqualTo "") exitWith {};
 
 			//create the blank campaign

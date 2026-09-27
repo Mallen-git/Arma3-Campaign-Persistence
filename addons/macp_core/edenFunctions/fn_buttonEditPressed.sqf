@@ -29,7 +29,7 @@ if (_selIndx isEqualTo -1) exitWith {};
 _selData = _listBox lbData _selIndx;
 
 //get current folder
-_filePath = _display getVariable ['macp_filePath', []];
+_filePath = _display getVariable ["macp_filePath", []];
 _allCampaignData = profileNamespace getVariable ["macp_clientAllCampaignData", createHashMap];
 _workingHashmap = _allCampaignData;
 
@@ -46,7 +46,7 @@ if (_selData in _arsenalItems) then
 	//global variable to detect when the aresenal is closed
 	macp_arsenalClosed = false;
 
-	//don't show we're creating the dummy unit to aresenal on to
+	//dont show were creating the dummy unit to aresenal on to
 	ignore3DENHistory {
 		macp_dummy = create3DENEntity ["Object", "B_Soldier_F", [0,0,100000]];
 	};
@@ -110,7 +110,7 @@ if (_selData in _arsenalItems) then
 	if (typeName _value isEqualTo "HASHMAP") exitWith
 	{
 		_filePath pushBack _selData;
-		_display setVariable ['macp_filePath', _filePath];
+		_display setVariable ["macp_filePath", _filePath];
 		[_display] call macp_core_fnc_updateFileBrowser;
 	};
 
@@ -144,7 +144,7 @@ if (_selData in _arsenalItems) then
 
 			waitUntil {macp_globalExitCode isNotEqualTo "NOTSET"};
 
-			//if we didn't confirm them leave
+			//if we didnt confirm them leave
 			if (macp_globalExitCode isNotEqualTo 1) exitWith {};
 
 			//get all campaign data
@@ -161,7 +161,7 @@ if (_selData in _arsenalItems) then
 			saveProfileNamespace;
 
 			//update the folder view
-			_display setVariable ['macp_filePath', []];
+			_display setVariable ["macp_filePath", []];
 			[_display] call macp_core_fnc_updateFileBrowser;
 		};
 	} else {

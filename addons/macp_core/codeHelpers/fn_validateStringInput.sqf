@@ -66,14 +66,14 @@ _errorFound = "None";
 	_previousUsefulCharacterUsing = _previousUsefulCharacter;
 	_previousUsefulCharacter = _x;
 
-	//if we've closed more brackets than we opened something went wrong, throw error
+	//if weve closed more brackets than we opened something went wrong, throw error
 	if (_bracketBudget <= 0) then
 	{
 		_errorFound = "Input closes more brackets than it has opened at character " + str(_forEachIndex + 1);
 		break;
 	};
 
-	//make sure we start with an open bracket, if we don't throw an error
+	//make sure we start with an open bracket, if we dont throw an error
 	if (not _firstBracketHit) then
 	{
 		if (_x isEqualTo "[") then
@@ -85,11 +85,11 @@ _errorFound = "None";
 		break;
 	};
 
-	//check if we're in a string, if we are we don't care whats in here
+	//check if were in a string, if we are we don"t care whats in here
 	if (_inString) then
 	{
 		//escape string if a double quote is found (this could fail if quotes are used by a string anywhere, will need fixing potentially)
-		if (_x isEqualTo '"') then
+		if (_x isEqualTo """") then
 		{
 			_inString = false;
 			_expectingComma = true;
@@ -150,7 +150,7 @@ _errorFound = "None";
 		};
 
 		//its a string, start tracking that
-		if (_x isEqualTo '"') then
+		if (_x isEqualTo """") then
 		{
 			_expectingComma = false;
 			_expectingItem = false;
@@ -219,7 +219,7 @@ _checkHashCorrect = {
 		if (_wildcardHashmap) then
 		{
 			//if value is not a hashmap thats an issue
-			if ((typeName _y) isNotEqualTo "HASHMAP") exitWith {macp_globalErrorCode = ('"' + _x + '" should be a hashmap, it is actually a ' + (typeName _y));true;};
+			if ((typeName _y) isNotEqualTo "HASHMAP") exitWith {macp_globalErrorCode = ("""" + _x + """ should be a hashmap, it is actually a " + (typeName _y));true;};
 
 			//next working level is stored in the expected items variable, grab it
 			_workingLevelName = _expectedItems select 1;
@@ -230,18 +230,18 @@ _checkHashCorrect = {
 		};
 
 		//if key not in the expected items its unexpected and can be thrown
-		if (not (_x in _expectedItems)) exitWith {macp_globalErrorCode = ('"' + _x + '" should not be in hashmap ' + _levelName);true;};
+		if (not (_x in _expectedItems)) exitWith {macp_globalErrorCode = ("""" + _x + """ should not be in hashmap " + _levelName);true;};
 
 		//delete key from expected items to detect if something is missing from this level
 		_expectedItems deleteAt (_expectedItems find _x);
 
 		//get the correct datatype expected for keys value, if none found throw an error
 		_keyDataType = _correctDataChecking getOrDefault [_x, "NONEFOUND"];
-		if (_keyDataType isEqualTo "NONEFOUND") exitWith {macp_globalErrorCode = ('cannot find the correct data type for "' + _x + '"');true;};
+		if (_keyDataType isEqualTo "NONEFOUND") exitWith {macp_globalErrorCode = ("cannot find the correct data type for """ + _x + """");true;};
 
 		//make sure value type is as expected, or error
 		_typeName = _keyDataType select 0;
-		if ((typeName _y) isNotEqualTo _typeName) exitWith {macp_globalErrorCode = ('"' + _x + '" should be a ' + _typeName + ', it is actually a ' + (typeName _y));true;};
+		if ((typeName _y) isNotEqualTo _typeName) exitWith {macp_globalErrorCode = ("""" + _x + """ should be a " + _typeName + ", it is actually a " + (typeName _y));true;};
 
 		switch (_typeName) do
 		{
@@ -256,18 +256,18 @@ _checkHashCorrect = {
 			//if its an array make sure its size is correct, if its not this will be caught and thrown
 			case "ARRAY": {
 				_size = _keyDataType select 1;
-				if ((count _y) isNotEqualTo _size) exitWith {macp_globalErrorCode = ('"' + _x + '" should be an array with size' + str(_size) + ' it is actually size ' + str(count _y));true;};
+				if ((count _y) isNotEqualTo _size) exitWith {macp_globalErrorCode = ("""" + _x + """ should be an array with size" + str(_size) + " it is actually size " + str(count _y));true;};
 			};
 
 			//if none of the above somethings wrong
-			default {if (true) exitWith {macp_globalErrorCode = ('"' + _x + '" is not a Hashmap, String, or Array, it should be one of these');true;};};
+			default {if (true) exitWith {macp_globalErrorCode = ("""" + _x + """ is not a Hashmap, String, or Array, it should be one of these");true;};};
 		};
 	} forEach _currentHashmap;
 
 	if (not _wildcardHashmap) then
 	{
 		//make sure all expected items have been found, if not throw an error
-		if (count _expectedItems isNotEqualTo 0) exitWith {macp_globalErrorCode = ('Hashmap "' + _levelName + '" is missing keys: ' + str(_expectedItems));true;};
+		if (count _expectedItems isNotEqualTo 0) exitWith {macp_globalErrorCode = ("Hashmap """ + _levelName + """ is missing keys: " + str(_expectedItems));true;};
 	};
 
 	//no errors, exit with false to signify that
