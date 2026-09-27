@@ -30,6 +30,7 @@ if (isNull _vault) exitWith {};
 
 //get the unit trying to open the vault
 _requestedUIDUnit = _requestedUID call BIS_fnc_getUnitByUID;
+_requestedUIDUnitForError = _requestedUIDUnit;
 
 //override if needed (ie admin checking vault)
 if (not isNull _overideUnit) then
@@ -39,6 +40,18 @@ if (not isNull _overideUnit) then
 
 //need a unit to open the vault for
 if (isNull _requestedUIDUnit) exitWith {diag_log (text "MACP - ERROR: Requested personal vault access with UID that does not point to a unit")};
+
+//check if vault is already opened by someone else
+if (not (isNull attachedTo _vault)) exitWith
+{
+	if (_requestedUIDUnitForError isEqualTo _requestedUIDUnit) then
+	{
+		["Your personnal vault is already opened by an admin, please ask them to close it before you can access it"] remoteExec ["hint", _requestedUIDUnit];
+	} else {
+		["Personnal vault is already opened by the player that owns it, please ask them to close it before you can access it"] remoteExec ["hint", _requestedUIDUnit];
+	};
+	diag_log (text "MACP - ERROR: Requested personal vault is already open by another player")
+};
 
 //grab the vault from storage and attach it to player
 _vault enableSimulationGlobal true;
