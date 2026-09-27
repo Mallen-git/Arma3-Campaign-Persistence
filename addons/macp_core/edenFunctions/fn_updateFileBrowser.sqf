@@ -62,7 +62,7 @@ _playerUIDNext = false;
 	};
 
 	//add the >> to signify the next item
-	_outputText = _outputText + _displayName + "" >> ";
+	_outputText = _outputText + _displayName + " >> ";
 
 	//if the next folder is for players let the next iteration know
 	if (_x isEqualTo "players") then {_playerUIDNext = true;} else {_playerUIDNext = false;};
