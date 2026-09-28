@@ -453,10 +453,12 @@ class macp_adminMenu
 
 		class allOrOnline: ctrlCombo
 		{
+			idc = 1021;
 			x = CENTER_X - WINDOW_W_WIDE * 0.5 * GRID_W + GRID_W;
 			y = WINDOW_TOPAbs + CTRL_DEFAULT_H + GRID_H;
 			w = 0.25 * WINDOW_W_WIDE * GRID_W - 2 * GRID_W;
 			h = CTRL_DEFAULT_H;
+			onLBSelChanged = "params ['_control', '_lbCurSel', '_lbSelection']; _display = ctrlParent _control; [_display] call macp_core_fnc_updatePlayerList;";
 			class Items
 			{
 				class onlinePlayers
@@ -472,6 +474,7 @@ class macp_adminMenu
 		};
 		class searchBar: ctrlEdit
 		{
+			idc = 1020;
 			text = "Search...";
 			x = CENTER_X - WINDOW_W_WIDE * 0.5 * GRID_W + GRID_W;
 			y = WINDOW_TOPAbs + 2 * CTRL_DEFAULT_H + 2 * GRID_H;
@@ -479,13 +482,17 @@ class macp_adminMenu
 			h = CTRL_DEFAULT_H;
 			onSetFocus = "params ['_control']; if ((ctrlText _control) isEqualTo 'Search...') then {_control ctrlSetText '';};";
 			onKillFocus = "params ['_control']; if ((ctrlText _control) isEqualTo '') then {_control ctrlSetText 'Search...';};";
+			onEditChanged = "params ['_control', '_newText']; _display = ctrlParent _control; [_display] call macp_core_fnc_updatePlayerList;";
 		};
 		class playerListBox: ctrlListbox
 		{
+			idc = 1500;
 			x = CENTER_X - WINDOW_W_WIDE * 0.5 * GRID_W + GRID_W;
 			y = WINDOW_TOPAbs + 3 * CTRL_DEFAULT_H + 3 * GRID_H;
 			w = 0.5 * WINDOW_W_WIDE * GRID_W - 2 * GRID_W;
 			h = 0.5 * WINDOW_HAbs - 3 * CTRL_DEFAULT_H - 3 * GRID_H;
+			onLBSelChanged = "params ['_control', '_lbCurSel', '_lbSelection']; _display = ctrlParent _control; [_display] call macp_core_fnc_updatePrevInvList;";
+			onLoad = "params ['_control', '_newText']; _display = ctrlParent _control; [_display] call macp_core_fnc_updatePlayerList;";
 			class Items
 			{
 				class noSelection
@@ -506,6 +513,7 @@ class macp_adminMenu
 		};
 		class PrevInventorysListBox: ctrlListbox
 		{
+			idc = 1501;
 			x = CENTER_X - WINDOW_W_WIDE * 0.5 * GRID_W + GRID_W;
 			y = WINDOW_TOPAbs + 0.5 * WINDOW_HAbs + GRID_H + CTRL_DEFAULT_H;
 			w = 0.5 * WINDOW_W_WIDE * GRID_W - 2 * GRID_W;
@@ -530,6 +538,7 @@ class macp_adminMenu
 			y = WINDOW_TOPAbs + GRID_H + 0.5 * WINDOW_HAbs;
 			w = 0.25 * WINDOW_W_WIDE * GRID_W - GRID_W;
 			h = CTRL_DEFAULT_H;
+			onButtonClick = "params ['_control']; _display = ctrlParent _control; [_display] call macp_core_fnc_buttonRestoreInvPressed;";
 		};
 		class ButtonOpenVault: ctrlButton
 		{
@@ -538,6 +547,7 @@ class macp_adminMenu
 			y = WINDOW_TOPAbs + GRID_H + 0.5 * WINDOW_HAbs;
 			w = 0.25 * WINDOW_W_WIDE * GRID_W - GRID_W;
 			h = CTRL_DEFAULT_H;
+			onButtonClick = "params ['_control']; _display = ctrlParent _control; [_display] call macp_core_fnc_buttonOpenVaultPressed;";
 		};
 
 

@@ -53,6 +53,10 @@ class CfgFunctions
 			class openAdminMenu {};
 			class showAdminMenu {};
 			class hideAdminMenu {};
+			class buttonRestoreInvPressed {};
+			class buttonOpenVaultPressed {};
+			class updatePlayerList {};
+			class updatePrevInvList {};
 		};
 	};
 };
