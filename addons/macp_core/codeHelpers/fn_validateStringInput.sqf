@@ -41,7 +41,7 @@ _correctDataLocation = createHashMapFromArray [
 //used to identify which keys are full of only hashmaps regardless of name
 _hashmapIdentifiers = createHashMapFromArray [
 	["players", true],
-	["previousInventorys", false]
+	["previousInventorys", true]
 ];
 
 //setup variables for string checking
@@ -202,9 +202,11 @@ macp_globalErrorCode = "";
 
 _checkHashCorrect = {
 	params["_checkHashCorrect", "_correctDataChecking", "_correctDataLocation", "_currentHashmap", "_levelName"];
+	privateAll;
 
 	//get all items expected in this hashmap
-	_expectedItems = _correctDataLocation get _levelName;
+	_expectedItemsTemp = _correctDataLocation get _levelName;
+	_expectedItems = +_expectedItemsTemp;
 
 	//if all values are hashmaps set the wildcard variable to true
 	_wildcardHashmap = false;
@@ -229,6 +231,7 @@ _checkHashCorrect = {
 
 			//if recursion found an error also throw an error and end early
 			if (_result) then {_errorDetected = true;break;};
+			continue;
 		};
 
 		//if key not in the expected items its unexpected and can be thrown
