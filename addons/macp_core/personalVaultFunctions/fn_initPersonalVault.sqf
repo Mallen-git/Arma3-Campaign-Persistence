@@ -26,9 +26,7 @@ _existingVault = macp_personalVaultLists getOrDefault [_requestedUID, objNull];
 if (not isNull _existingVault) exitWith {};
 
 //get players profile
-_allPlayerProfiles = macp_currentCampaignDataServer get "players";
-_playerProfile = _allPlayerProfiles get _requestedUID;
-_personalVault = _playerProfile get "personalVault";
+_personalVault = macp_currentCampaignDataServer get "players" get _requestedUID get "personalVault";
 
 //get item types in the vault
 _personalVault params ["_containers", "_weapons", "_mags", "_items"];

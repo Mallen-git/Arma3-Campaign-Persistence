@@ -26,8 +26,7 @@ if (_requestedUID isEqualTo "NOTSUPPLIED") exitWith {diag_log (text "MACP - ERRO
 if (_loadout isEqualTo "NOTSUPPLIED") exitWith {diag_log (text "MACP - ERROR: Requested set current loadout with no supplied loadout")};
 
 //get players profile
-_allPlayerProfiles = macp_currentCampaignDataServer get "players";
-_playerProfile = _allPlayerProfiles get _requestedUID;
+_playerProfile = macp_currentCampaignDataServer get "players" get _requestedUID;
 _currentInventory = _playerProfile set ["currentInventory", _loadout];
 
 //get the unit for the UID

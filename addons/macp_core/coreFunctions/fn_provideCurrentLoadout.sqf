@@ -35,9 +35,7 @@ if (not isNull _overideUnit) then
 if (isNull _requestedUIDUnit) exitWith {diag_log (text "MACP - ERROR: Requested current loadout with UID that does not point to a unit")};
 
 //get players profile
-_allPlayerProfiles = macp_currentCampaignDataServer get "players";
-_playerProfile = _allPlayerProfiles get _requestedUID;
-_currentInventory = _playerProfile get "currentInventory";
+_currentInventory = macp_currentCampaignDataServer get "players" get _requestedUID get "currentInventory";
 
 //set inventory
 _requestedUIDUnit setUnitLoadout _currentInventory;

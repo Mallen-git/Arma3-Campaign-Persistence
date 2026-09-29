@@ -55,16 +55,12 @@ if (_storageReason isEqualTo "DEATH") then
 	};
 };
 
-//get players profile
-_allPlayerProfiles = macp_currentCampaignDataServer get "players";
-_playerProfile = _allPlayerProfiles get _requestedUID;
-
 //store corpse loadout in previous deaths
 _data = ["%4:%5:%6, %3-%2-%1"];
 _data append systemTimeUTC;
 
 _currentTimestamp = format _data;
-_previousInventorys = _playerProfile get "previousInventorys";
+_previousInventorys = macp_currentCampaignDataServer get "players" get _requestedUID get "previousInventorys";
 _previousInventorys set [_currentTimestamp, createHashMapFromArray [["storageReason", _storageReason], ["previousInventory", _inventoryToStore]]];
 
 saveProfileNamespace;

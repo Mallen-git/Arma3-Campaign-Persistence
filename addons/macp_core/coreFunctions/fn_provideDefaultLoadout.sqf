@@ -38,8 +38,7 @@ if (isNull _requestedUIDUnit) exitWith {diag_log (text "MACP - ERROR: Requested 
 _defaultKit = macp_currentCampaignDataServer get "defaultKit";
 
 //get players profile
-_allPlayerProfiles = macp_currentCampaignDataServer get "players";
-_playerProfile = _allPlayerProfiles get _requestedUID;
+_playerProfile = macp_currentCampaignDataServer get "players" get _requestedUID;
 _playerProfile set ["currentInventory", _defaultKit];
 
 //set inventory

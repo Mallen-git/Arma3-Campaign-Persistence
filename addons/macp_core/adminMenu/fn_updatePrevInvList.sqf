@@ -22,8 +22,7 @@ _playerListBox = _display displayCtrl 1500;
 _prevInvListBox = _display displayCtrl 1501;
 
 //get player profile
-_allPlayerProfiles = macp_currentCampaignDataClient get "players";
-_ourPlayerProfile = _allPlayerProfiles getOrDefault [(_playerListBox lbData (lbCurSel _playerListBox)), "NONEFOUND"];
+_ourPlayerProfile = macp_currentCampaignDataClient get "players" getOrDefault [(_playerListBox lbData (lbCurSel _playerListBox)), "NONEFOUND"];
 
 lbClear _prevInvListBox;
 
