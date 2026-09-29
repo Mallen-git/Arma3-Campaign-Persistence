@@ -57,6 +57,8 @@ if (not (isNull attachedTo _vault)) exitWith
 	diag_log (text "MACP - ERROR: Requested personal vault is already open by another player")
 };
 
+if (not (isNull objectParent _requestedUIDUnit)) exitWith {["Cannot access personal vault inside of a vehicle"] remoteExec ["hint", _requestedUIDUnit];};
+
 //grab the vault from storage and attach it to player
 _vault enableSimulationGlobal true;
 _vault setVehiclePosition [getPos _requestedUIDUnit, [], 0, "CAN_COLLIDE"];

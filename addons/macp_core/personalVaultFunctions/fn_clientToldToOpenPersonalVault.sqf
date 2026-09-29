@@ -24,10 +24,16 @@ if (isNull _vault) exitWith {diag_log (text "MACP - ERROR: Told to open personal
 
 //open the vault
 player action ["Gear", _vault];
-
-//when the player closes the vault let the server know and remove this EH
-player addEventHandler ["InventoryClosed", {
-	params ["_unit", "_container"];
-	[[_container], macp_core_fnc_closePersonalVault] remoteExec ["call", 2];
-	player removeEventHandler [_thisEvent, _thisEventHandler];
-}];
+[{!isNull findDisplay 602},
+{
+	//when the player closes the vault let the server know and remove this EH
+	player addEventHandler ["InventoryClosed", {
+		params ["_unit", "_container"];
+		[[_container], macp_core_fnc_closePersonalVault] remoteExec ["call", 2];
+		player removeEventHandler [_thisEvent, _thisEventHandler];
+	}];
+}, _vault, 5,
+{
+	//if player has not opened inventory in 5 seconds presume inventory failed to open and tell server to abort
+	[[_this], macp_core_fnc_closePersonalVault] remoteExec ["call", 2];
+}] call CBA_fnc_waitUntilAndExecute;
