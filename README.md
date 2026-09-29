@@ -21,14 +21,12 @@ MACP includes the following features currently:
 - Personal private vault for each person to store loot without risking it in battle
 - Kit snapshots on death and disconnect allowing rollbacks in case someone got Arma'd
 - Comprehensive campaign management tool allowing easy and intuitive management of campaigns
+- In-game admin tools for vault inspection and inventory restoration
+- CBA settings to customise how MACP works
 
 With planned features such as:
 
-- Admin Tools
-	- Live access to player vaults
-	- Live player Kit rollback
-	- Offline Vault Management
-- CBA settings for customisation
+- Offline Vault Management
 - Shared campaign vault
 - Money tracking
 - Personal and shared garages for vic storage
