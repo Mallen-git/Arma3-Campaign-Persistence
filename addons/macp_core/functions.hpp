@@ -8,6 +8,7 @@ class CfgFunctions
 			class serverInit {};
 			class clientInit {};
 			class provideCurrentLoadout {};
+			class setCurrentLoadout {};
 			class provideDefaultLoadout {};
 			class saveAllKitsAndVaults {};
 			class saveToPreviousInventorys {};
