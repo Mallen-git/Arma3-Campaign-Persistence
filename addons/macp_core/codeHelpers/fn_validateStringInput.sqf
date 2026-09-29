@@ -213,42 +213,44 @@ _checkHashCorrect = {
 		_wildcardHashmap = true;
 	};
 
+	_errorDetected = false;
+
 	//for each of the current hashmap
 	{
 		//if all values are hashmaps
 		if (_wildcardHashmap) then
 		{
 			//if value is not a hashmap thats an issue
-			if ((typeName _y) isNotEqualTo "HASHMAP") exitWith {macp_globalErrorCode = ("""" + _x + """ should be a hashmap, it is actually a " + (typeName _y));true;};
+			if ((typeName _y) isNotEqualTo "HASHMAP") then {macp_globalErrorCode = ("""" + _x + """ should be a hashmap, it is actually a " + (typeName _y));_errorDetected = true;break;};
 
 			//next working level is stored in the expected items variable, grab it
 			_workingLevelName = _expectedItems select 1;
 			_result = [_checkHashCorrect, _correctDataChecking, _correctDataLocation, _y, _workingLevelName] call _checkHashCorrect;
 
 			//if recursion found an error also throw an error and end early
-			if (_result) exitWith {true;};
+			if (_result) then {_errorDetected = true;break;};
 		};
 
 		//if key not in the expected items its unexpected and can be thrown
-		if (not (_x in _expectedItems)) exitWith {macp_globalErrorCode = ("""" + _x + """ should not be in hashmap " + _levelName);true;};
+		if (not (_x in _expectedItems)) then {macp_globalErrorCode = ("""" + _x + """ should not be in hashmap " + _levelName);_errorDetected = true;break;};
 
 		//delete key from expected items to detect if something is missing from this level
 		_expectedItems deleteAt (_expectedItems find _x);
 
 		//get the correct datatype expected for keys value, if none found throw an error
 		_keyDataType = _correctDataChecking getOrDefault [_x, "NONEFOUND"];
-		if (_keyDataType isEqualTo "NONEFOUND") exitWith {macp_globalErrorCode = ("cannot find the correct data type for """ + _x + """");true;};
+		if (_keyDataType isEqualTo "NONEFOUND") then {macp_globalErrorCode = ("cannot find the correct data type for """ + _x + """");_errorDetected = true;break;};
 
 		//make sure value type is as expected, or error
 		_typeName = _keyDataType select 0;
-		if ((typeName _y) isNotEqualTo _typeName) exitWith {macp_globalErrorCode = ("""" + _x + """ should be a " + _typeName + ", it is actually a " + (typeName _y));true;};
+		if ((typeName _y) isNotEqualTo _typeName) then {macp_globalErrorCode = ("""" + _x + """ should be a " + _typeName + ", it is actually a " + (typeName _y));_errorDetected = true;break;};
 
 		switch (_typeName) do
 		{
 			//if its a hashmap do some recursion
 			case "HASHMAP": {
 				_result = [_checkHashCorrect, _correctDataChecking, _correctDataLocation, _y, _x] call _checkHashCorrect;
-				if (_result) exitWith {true;};
+				if (_result) then {_errorDetected = true;break;};
 			};
 
 			case "STRING": {};
@@ -256,22 +258,22 @@ _checkHashCorrect = {
 			//if its an array make sure its size is correct, if its not this will be caught and thrown
 			case "ARRAY": {
 				_size = _keyDataType select 1;
-				if ((count _y) isNotEqualTo _size) exitWith {macp_globalErrorCode = ("""" + _x + """ should be an array with size" + str(_size) + " it is actually size " + str(count _y));true;};
+				if ((count _y) isNotEqualTo _size) then {macp_globalErrorCode = ("""" + _x + """ should be an array with size" + str(_size) + " it is actually size " + str(count _y));_errorDetected = true;break;};
 			};
 
 			//if none of the above somethings wrong
-			default {if (true) exitWith {macp_globalErrorCode = ("""" + _x + """ is not a Hashmap, String, or Array, it should be one of these");true;};};
+			default {macp_globalErrorCode = ("""" + _x + """ is not a Hashmap, String, or Array, it should be one of these");_errorDetected = true;break;};
 		};
 	} forEach _currentHashmap;
 
-	if (not _wildcardHashmap) then
+	if ((not _wildcardHashmap) and (not _errorDetected)) then
 	{
 		//make sure all expected items have been found, if not throw an error
 		if (count _expectedItems isNotEqualTo 0) exitWith {macp_globalErrorCode = ("Hashmap """ + _levelName + """ is missing keys: " + str(_expectedItems));true;};
 	};
 
 	//no errors, exit with false to signify that
-	false;
+	_errorDetected;
 };
 
 //check data position and value type, if theres an error output the error code
