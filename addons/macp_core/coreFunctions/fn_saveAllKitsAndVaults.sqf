@@ -18,7 +18,7 @@
 if (not isServer) exitWith {diag_log (text "MACP - ERROR: macp_core_fnc_saveAllKitsAndVaults ran on client, not server")};
 
 //get all current players profiles
-_allPlayerProfiles = macp_currentCampaignData get "players";
+_allPlayerProfiles = macp_currentCampaignDataServer get "players";
 
 {
 	_playerUID = _x;

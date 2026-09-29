@@ -25,10 +25,10 @@ if (_requestedUID isEqualTo "NOTSUPPLIED") exitWith {diag_log (text "MACP - ERRO
 _requestedUIDUnit = _requestedUID call BIS_fnc_getUnitByUID;
 
 //get the players hashmap, if player already has a profile leave
-_allPlayerProfiles = macp_currentCampaignData get "players";
+_allPlayerProfiles = macp_currentCampaignDataServer get "players";
 if (_requestedUID in _allPlayerProfiles) exitWith {};
 
-_defaultKit = macp_currentCampaignData get "defaultKit";
+_defaultKit = macp_currentCampaignDataServer get "defaultKit";
 
 //if we are not using default kits simply get the current unit loadout
 if (not macp_defaultKit) then

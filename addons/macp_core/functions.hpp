@@ -5,13 +5,16 @@ class CfgFunctions
 		class core
 		{
 			file = "macp_core\coreFunctions";
-			class init {};
+			class serverInit {};
+			class clientInit {};
 			class provideCurrentLoadout {};
 			class provideDefaultLoadout {};
 			class saveAllKitsAndVaults {};
 			class saveToPreviousInventorys {};
 			class saveToCurrentInventory {};
 			class createPlayerProfile {};
+			class askForUpdatedData {};
+			class recieveUpdatedData {};
 		};
 		class codeHelpers
 		{
@@ -20,6 +23,7 @@ class CfgFunctions
 			class validateHashmap {};
 			class validateStringInput {};
 			class validUIDArray {};
+			class canSaveCampaignData {};
 		};
 		class personalVault
 		{

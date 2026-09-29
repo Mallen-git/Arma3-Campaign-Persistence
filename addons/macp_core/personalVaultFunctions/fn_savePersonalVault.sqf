@@ -26,7 +26,7 @@ _vault = macp_personalVaultLists getOrDefault [_requestedUID, objNull];
 if (isNull _vault) exitWith {};
 
 //get players profile
-_allPlayerProfiles = macp_currentCampaignData get "players";
+_allPlayerProfiles = macp_currentCampaignDataServer get "players";
 _playerProfile = _allPlayerProfiles get _requestedUID;
 
 //check if sim is enabled on the vault, if its not, then enable it for inventory reading

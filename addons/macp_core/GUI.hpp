@@ -418,6 +418,7 @@ class macp_campaignManagerImport
 class macp_adminMenu
 {
 	idd = -1;
+	onLoad = "[[false], macp_core_fnc_askForUpdatedData] remoteExec ['call', 2];";
 	class ControlsBackground
 	{
 		//Background controls

@@ -38,7 +38,7 @@ if (isNull _requestedUIDUnit) exitWith {diag_log (text "MACP - ERROR: Requested 
 _inventoryToStore = getUnitLoadout _requestedUIDUnit;
 
 //get players profile
-_allPlayerProfiles = macp_currentCampaignData get "players";
+_allPlayerProfiles = macp_currentCampaignDataServer get "players";
 _playerProfile = _allPlayerProfiles get _requestedUID;
 
 _currentInventory = _playerProfile set ["currentInventory", _inventoryToStore];

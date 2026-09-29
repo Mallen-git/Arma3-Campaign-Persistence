@@ -56,7 +56,7 @@ if (_storageReason isEqualTo "DEATH") then
 };
 
 //get players profile
-_allPlayerProfiles = macp_currentCampaignData get "players";
+_allPlayerProfiles = macp_currentCampaignDataServer get "players";
 _playerProfile = _allPlayerProfiles get _requestedUID;
 
 //store corpse loadout in previous deaths

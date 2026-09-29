@@ -38,9 +38,9 @@ class CfgVehicles
 		scope = 2;
 		scopeCurator = 1;
 
-		function = "macp_core_fnc_init";
+		function = "macp_core_fnc_serverInit";
 		functionPriority = 1;
-		isGlobal = 2;						// 0 for server only execution, 1 for global execution, 2 for persistent global execution
+		isGlobal = 0;						// 0 for server only execution, 1 for global execution, 2 for persistent global execution
 		isTriggerActivated = 0;				// 1 for module waiting until all synced triggers are activated
 		isDisposable = 1;					// 1 if modules is to be disabled once it is activated (i.e. repeated trigger activation will not work)
 		is3DEN = 0;							// 1 to run init function in Eden Editor as well

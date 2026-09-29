@@ -33,7 +33,7 @@ _searchTerm = toLower (ctrlText _searchBar);
 if (_searchTerm isEqualTo "search...") then {_searchTerm = "";};
 
 //for all player profiles
-_allPlayerProfiles = macp_currentCampaignData get "players";
+_allPlayerProfiles = macp_currentCampaignDataClient get "players";
 {
 	_uid = _x;
 	_name = _y get "lastUsedName";

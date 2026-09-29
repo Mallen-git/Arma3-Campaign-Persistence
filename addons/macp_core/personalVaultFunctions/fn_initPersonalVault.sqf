@@ -26,7 +26,7 @@ _existingVault = macp_personalVaultLists getOrDefault [_requestedUID, objNull];
 if (not isNull _existingVault) exitWith {};
 
 //get players profile
-_allPlayerProfiles = macp_currentCampaignData get "players";
+_allPlayerProfiles = macp_currentCampaignDataServer get "players";
 _playerProfile = _allPlayerProfiles get _requestedUID;
 _personalVault = _playerProfile get "personalVault";
 
