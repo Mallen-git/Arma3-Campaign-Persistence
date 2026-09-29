@@ -24,9 +24,8 @@ _playerListBox = _display displayCtrl 1500;
 
 //clear listbox and add default choice
 lbClear _playerListBox;
-_lbAdd = _playerListBox lbAdd "No Selection";
-_playerListBox lbSetData [_lbAdd, "NOSELECTION"];
-_playerListBox lbSetCurSel _lbAdd;
+_lbAddFirst = _playerListBox lbAdd "No Selection";
+_playerListBox lbSetData [_lbAddFirst, "NOSELECTION"];
 
 //get search term, if not typed set to nothing for wildcard
 _searchTerm = toLower (ctrlText _searchBar);
@@ -75,3 +74,5 @@ if (_selectedFilter isEqualTo 0) then
 		_playerListBox lbDelete _x;
 	} forEachReversed _indToDelete
 };
+
+_playerListBox lbSetCurSel _lbAddFirst;
