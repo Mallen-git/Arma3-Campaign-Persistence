@@ -32,15 +32,17 @@ _allPlayerProfiles = macp_currentCampaignDataServer get "players";
 	//cannot save a units loadout if not on the server
 	if (isNull _playerUnit) then {continue;};
 
+	//get player inventory and save
 	_playerLoadout = getUnitLoadout _playerUnit;
-
 	_playerProfile set ["currentInventory", _playerLoadout];
 
+	//get misc player statuses and trainings
 	_engineerLevel = _playerUnit getVariable ["ace_isEngineer", parseNumber (_playerUnit getUnitTrait "engineer")];
 	_medicLevel = _playerUnit getVariable ["ace_medical_medicClass", parseNumber (_playerUnit getUnitTrait "medic")];
 	_eodStatus = [_playerUnit] call ace_common_fnc_isEOD;
 	_medicalStatus = [_playerUnit] call ace_medical_fnc_serializeState;
 
+	//save misc player statuses and trainings
 	_playerProfile set ["playerEngineerLevel", _engineerLevel];
 	_playerProfile set ["playerMedicalLevel", _engineerLevel];
 	_playerProfile set ["playerEODStatus", _eodStatus];

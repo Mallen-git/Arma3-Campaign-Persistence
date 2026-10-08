@@ -25,17 +25,19 @@ if (_requestedUID isEqualTo "NOTSUPPLIED") exitWith {diag_log (text "MACP - ERRO
 //get the unit for the UID
 _requestedUIDUnit = _requestedUID call BIS_fnc_getUnitByUID;
 
-//if we are overriding the unit to give the current loadout to then do so
+//if we are overriding the unit to give the medical level to then do so
 if (not isNull _overideUnit) then
 {
 	_requestedUIDUnit = _overideUnit;
 };
 
-//cant give the loadout to someone without a unit
+//cant give the medical level to someone without a unit
 if (isNull _requestedUIDUnit) exitWith {diag_log (text "MACP - ERROR: Requested current medical level with UID that does not point to a unit")};
 
+//get current medical level
 _currentMedicalLevel = macp_currentCampaignDataServer get "players" get _requestedUID get "playerMedicalLevel";
 
+//if allowed, set current medical level on unit
 if (macp_setMedicalLevel) then
 {
 	_requestedUIDUnit setVariable ["ace_medical_medicClass", _currentMedicalLevel, true];

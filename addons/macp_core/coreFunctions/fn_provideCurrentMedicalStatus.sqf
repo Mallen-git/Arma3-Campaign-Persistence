@@ -25,17 +25,19 @@ if (_requestedUID isEqualTo "NOTSUPPLIED") exitWith {diag_log (text "MACP - ERRO
 //get the unit for the UID
 _requestedUIDUnit = _requestedUID call BIS_fnc_getUnitByUID;
 
-//if we are overriding the unit to give the current loadout to then do so
+//if we are overriding the unit to give the current medical status to then do so
 if (not isNull _overideUnit) then
 {
 	_requestedUIDUnit = _overideUnit;
 };
 
-//cant give the loadout to someone without a unit
+//cant give the medical status to someone without a unit
 if (isNull _requestedUIDUnit) exitWith {diag_log (text "MACP - ERROR: Requested current medical status with UID that does not point to a unit")};
 
+//get current medical status
 _currentMedicalStatus = macp_currentCampaignDataServer get "players" get _requestedUID get "medicalStatus";
 
+//if allowed, tell player to set their own medical status (must be local)
 if (macp_saveMedicalStatus) then
 {
 	[[_requestedUIDUnit, _currentMedicalStatus], ace_medical_fnc_deserializeState] remoteExec ["call", _requestedUIDUnit];

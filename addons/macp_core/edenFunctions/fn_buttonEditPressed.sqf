@@ -198,11 +198,13 @@ if (_selData in _arsenalItems) then
 			//if we didnt confirm them leave
 			if (macp_globalExitCode isNotEqualTo 1) exitWith {};
 
+			//make sure number is either 0, 1, or 2 with nothing else in string
 			_valid = macp_globalValue regexMatch "^\s*[0-2]\s*$";
-
 			if (not _valid) exitWith {};
 
+			//parse new value
 			_usableValue = parseNumber macp_globalValue;
+
 			//set new data
 			_workingHashmap set [_selData, _usableValue];
 
