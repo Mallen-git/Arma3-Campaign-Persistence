@@ -35,7 +35,8 @@ _displayNames = createHashMapFromArray [
 	["personalVault", "Personal Vault"],
 	["playerEngineerLevel", "ACE Engineer Level"],
 	["playerMedicalLevel", "ACE Medic Level"],
-	["playerEODStatus", "EOD specialist status"]
+	["playerEODStatus", "EOD specialist status"],
+	["medicalStatus", "Medical Status"]
 ];
 
 _listBox = _display displayCtrl 1500;

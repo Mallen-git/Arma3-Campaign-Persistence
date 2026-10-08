@@ -38,6 +38,9 @@ mcap_initialRespawn = false;
 [[getPlayerUID player], macp_core_fnc_provideCurrentMedicalLevel] remoteExec ["call", 2];
 [[getPlayerUID player], macp_core_fnc_provideCurrentEODStatus] remoteExec ["call", 2];
 
+//request server to give me medical status from last Op
+[[getPlayerUID player], macp_core_fnc_provideCurrentMedicalStatus] remoteExec ["call", 2];
+
 //init personal vault
 [[getPlayerUID player], macp_core_fnc_initPersonalVault] remoteExec ["call", 2];
 

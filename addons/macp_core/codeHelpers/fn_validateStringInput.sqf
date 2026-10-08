@@ -32,14 +32,15 @@ _correctDataChecking = createHashMapFromArray [
 	["personalVault", ["ARRAY", 4, "VAULT"]],
 	["playerEngineerLevel", ["SCALAR"]],
 	["playerMedicalLevel", ["SCALAR"]],
-	["playerEODStatus", ["BOOL"]]
+	["playerEODStatus", ["BOOL"]],
+	["playerMedicalStatus", ["STRING"]]
 ];
 
 //used to make sure each hashmap has the correct items in it
 _correctDataLocation = createHashMapFromArray [
 	["root", ["key", "players", "ver", "defaultKit", "defaultEngineer", "defaultMedical", "defaultEODStatus"]],
 	["players", ["ALLHASHMAPS", "playerProfile"]],
-	["playerProfile", ["previousInventorys", "currentInventory", "lastUsedName", "personalVault", "playerEngineerLevel", "playerMedicalLevel", "playerEODStatus"]],
+	["playerProfile", ["previousInventorys", "currentInventory", "lastUsedName", "personalVault", "playerEngineerLevel", "playerMedicalLevel", "playerEODStatus", "playerMedicalStatus"]],
 	["previousInventorys", ["ALLHASHMAPS", "prevInv"]],
 	["prevInv", ["previousInventory", "storageReason"]]
 ];

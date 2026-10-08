@@ -79,6 +79,15 @@
 ] call CBA_fnc_addSetting;
 
 [
+	"macp_saveMedicalStatus", // Internal setting name, should always contain a tag! This will be the global variable which takes the value of the setting.
+	"CHECKBOX", // setting type
+	["Save ACE medical status?", 'Should players current wounds, patched wounds, and general medical status be saved between missions'],
+	"MACP - Campaign Persistence", // Pretty name of the category where the setting can be found. Can be stringtable entry.
+	false, // data for this setting: [min, max, default, number of shown trailing decimals]
+	true // "_isGlobal" flag. Set this to true to always have this setting synchronized between all clients in multiplayer
+] call CBA_fnc_addSetting;
+
+[
 	"macp_defaultKit", // Internal setting name, should always contain a tag! This will be the global variable which takes the value of the setting.
 	"CHECKBOX", // setting type
 	["Recieve default kit?", 'Should players recieve the default kit when they respawn or are new to the campaign? if not, kit will default to whatever was set for the unit in the editor'],

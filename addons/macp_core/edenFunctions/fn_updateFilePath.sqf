@@ -36,7 +36,8 @@ _displayNames = createHashMapFromArray [
 	["personalVault", "Personal Vault"],
 	["playerEngineerLevel", "ACE Engineer Level"],
 	["playerMedicalLevel", "ACE Medic Level"],
-	["playerEODStatus", "EOD specialist status"]
+	["playerEODStatus", "EOD specialist status"],
+	["medicalStatus", "Medical Status"]
 ];
 
 //used to determine what buttons (New, Delete, Edit) are available per item selected
@@ -56,7 +57,8 @@ _availableOptionsPerItem = createHashMapFromArray [
 	["personalVault", [false, true, true]],
 	["playerEngineerLevel", [false, false, true]],
 	["playerMedicalLevel", [false, false, true]],
-	["playerEODStatus", [false, false, true]]
+	["playerEODStatus", [false, false, true]],
+	["medicalStatus", [false, true, false]]
 ];
 
 //used to determine what buttons (New, Delete, Edit) are available per folder, for folders with unknowable item names

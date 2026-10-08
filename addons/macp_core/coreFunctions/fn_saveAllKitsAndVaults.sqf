@@ -39,10 +39,12 @@ _allPlayerProfiles = macp_currentCampaignDataServer get "players";
 	_engineerLevel = _playerUnit getVariable ["ace_isEngineer", parseNumber (_playerUnit getUnitTrait "engineer")];
 	_medicLevel = _playerUnit getVariable ["ace_medical_medicClass", parseNumber (_playerUnit getUnitTrait "medic")];
 	_eodStatus = [_playerUnit] call ace_common_fnc_isEOD;
+	_medicalStatus = [_playerUnit] call ace_medical_fnc_serializeState;
 
 	_playerProfile set ["playerEngineerLevel", _engineerLevel];
 	_playerProfile set ["playerMedicalLevel", _engineerLevel];
 	_playerProfile set ["playerEODStatus", _eodStatus];
+	_playerProfile set ["medicalStatus", _medicalStatus];
 
 } forEach _allPlayerProfiles;
 
