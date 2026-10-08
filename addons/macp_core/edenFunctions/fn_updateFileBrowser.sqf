@@ -23,13 +23,17 @@ _displayNames = createHashMapFromArray [
 	["key", "Campaign Key"],
 	["players", "Players"],
 	["defaultKit", "Default Kit"],
+	["defaultEngineerLevel", "Default ACE Engineer Level"],
+	["defaultMedicalLevel", "Default ACE Medic Level"],
 	["ver", "Save Version"],
 	["previousInventorys", "Previous Inventorys"],
 	["previousInventory", "Previous Inventory"],
 	["storageReason", "Storage Reason"],
 	["currentInventory", "Current Inventory"],
 	["lastUsedName", "Last Used Name"],
-	["personalVault", "Personal Vault"]
+	["personalVault", "Personal Vault"],
+	["playerEngineerLevel", "ACE Engineer Level"],
+	["playerMedicalLevel", "ACE Medic Level"]
 ];
 
 _listBox = _display displayCtrl 1500;

@@ -21,19 +21,23 @@ _correctDataChecking = createHashMapFromArray [
 	["players", ["HASHMAP"]],
 	["ver", ["ARRAY", 3, "SCALAR"]],
 	["defaultKit", ["ARRAY", 10, "KIT"]],
+	["defaultEngineerLevel", ["SCALAR"]],
+	["defaultMedicalLevel", ["SCALAR"]],
 	["previousInventorys", ["HASHMAP"]],
 	["previousInventory", ["ARRAY", 10, "KIT"]],
 	["storageReason", ["STRING"]],
 	["currentInventory", ["ARRAY", 10, "KIT"]],
 	["lastUsedName", ["STRING"]],
-	["personalVault", ["ARRAY", 4, "VAULT"]]
+	["personalVault", ["ARRAY", 4, "VAULT"]],
+	["playerEngineerLevel", ["SCALAR"]],
+	["playerMedicalLevel", ["SCALAR"]]
 ];
 
 //used to make sure each hashmap has the correct items in it
 _correctDataLocation = createHashMapFromArray [
-	["root", ["key", "players", "ver", "defaultKit"]],
+	["root", ["key", "players", "ver", "defaultKit", "defaultEngineer", "defaultMedical"]],
 	["players", ["ALLHASHMAPS", "playerProfile"]],
-	["playerProfile", ["previousInventorys", "currentInventory", "lastUsedName", "personalVault"]],
+	["playerProfile", ["previousInventorys", "currentInventory", "lastUsedName", "personalVault", "playerEngineerLevel", "playerMedicalLevel"]],
 	["previousInventorys", ["ALLHASHMAPS", "prevInv"]],
 	["prevInv", ["previousInventory", "storageReason"]]
 ];
@@ -197,6 +201,9 @@ _workingHashMap = createHashMapFromArray _workingArray;
 //fill out the hashmap with child hashmaps
 [_hashmapIdentifiers, _workingHashMap, false] call macp_core_fnc_investigateHashmap;
 
+//upgrade save if it is needed
+[_workingHashMap] call macp_core_fnc_checkAndUpgradeSave;
+
 //setup an error code that can be accessed anywhere in the following recursive function
 macp_globalErrorCode = "";
 
@@ -257,6 +264,8 @@ _checkHashCorrect = {
 			};
 
 			case "STRING": {};
+
+			case "SCALAR": {};
 
 			//if its an array make sure its size is correct, if its not this will be caught and thrown
 			case "ARRAY": {

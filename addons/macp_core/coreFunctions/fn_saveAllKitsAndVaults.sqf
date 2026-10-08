@@ -36,6 +36,12 @@ _allPlayerProfiles = macp_currentCampaignDataServer get "players";
 
 	_playerProfile set ["currentInventory", _playerLoadout];
 
+	_engineerLevel = _playerUnit getVariable ["ace_isEngineer", parseNumber (_playerUnit getUnitTrait "engineer")];
+	_medicLevel = _playerUnit getVariable ["ace_medical_medicClass", parseNumber (_playerUnit getUnitTrait "medic")];
+
+	_playerProfile set ["playerEngineerLevel", _engineerLevel];
+	_playerProfile set ["playerMedicalLevel", _engineerLevel];
+
 } forEach _allPlayerProfiles;
 
 saveProfileNamespace;

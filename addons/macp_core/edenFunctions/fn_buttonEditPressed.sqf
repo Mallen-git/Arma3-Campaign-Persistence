@@ -164,7 +164,55 @@ if (_selData in _arsenalItems) then
 			_display setVariable ["macp_filePath", []];
 			[_display] call macp_core_fnc_updateFileBrowser;
 		};
-	} else {
-		//change a value? no examples atm to use
+	};
+
+	if (_selData in ["defaultEngineerLevel", "defaultMedicalLevel", "playerEngineerLevel", "playerMedicalLevel"]) then
+	{
+		//open the display to change a single value and fill in the needed text and default values
+		_popUpDisplay = _display createDisplay "macp_campaignManagerSingleValuePopup";
+		_title = _popUpDisplay displayCtrl 5340;
+		_text = _popUpDisplay displayCtrl 5341;
+		_txtValue = _popUpDisplay displayCtrl 5342;
+
+		_title ctrlSetText "MACP Edit Engineer or Medical Value";
+		_text ctrlSetText "New value? (must be 0, 1, or 2)";
+		_txtValue ctrlSetText (str _value);
+
+		//used to preserve locality, get the new value and exit code when pop-up closes
+		macp_globalExitCode = "NOTSET";
+		macp_globalValue = "";
+		_popUpDisplay displayAddEventHandler ["Unload",
+		{
+			params ["_display", "_exitCode"];
+			_txtValue = _display displayCtrl 5342;
+			_value = ctrlText _txtValue;
+			macp_globalExitCode = _exitCode;
+			macp_globalValue = _value;
+		}];
+
+		[_selData, _workingHashmap, _display] spawn {
+			params ["_selData", "_workingHashmap", "_display"];
+
+			waitUntil {macp_globalExitCode isNotEqualTo "NOTSET"};
+
+			//if we didnt confirm them leave
+			if (macp_globalExitCode isNotEqualTo 1) exitWith {};
+
+			_valid = macp_globalValue regexMatch "^\s*[0-2]\s*$";
+
+			if (not _valid) exitWith {};
+
+			_usableValue = parseNumber macp_globalValue;
+			//set new data
+			_workingHashmap set [_selData, _usableValue];
+
+			//cleanup global variables
+			macp_globalExitCode = nil;
+			macp_globalValue = nil;
+			saveProfileNamespace;
+
+			//update the folder view
+			[_display] call macp_core_fnc_updateFileBrowser;
+		};
 	};
 };

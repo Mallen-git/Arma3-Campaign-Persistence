@@ -10,6 +10,10 @@ class CfgFunctions
 			class provideCurrentLoadout {};
 			class setCurrentLoadout {};
 			class provideDefaultLoadout {};
+			class provideCurrentEngineerLevel {};
+			class provideDefaultEngineerLevel {};
+			class provideCurrentMedicalLevel {};
+			class provideDefaultMedicalLevel {};
 			class saveAllKitsAndVaults {};
 			class saveToPreviousInventorys {};
 			class saveToCurrentInventory {};
@@ -62,6 +66,12 @@ class CfgFunctions
 			class buttonOpenVaultPressed {};
 			class updatePlayerList {};
 			class updatePrevInvList {};
+		};
+		class versionUpgrading
+		{
+			file = "macp_core\versionUpgrading";
+			class checkAndUpgradeSave {};
+			class upgrade101To130 {};
 		};
 	};
 };

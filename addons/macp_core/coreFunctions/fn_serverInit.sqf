@@ -29,6 +29,13 @@ _rawCampaignData = _logic getVariable ["macp_campaignData", "NOCAMPAIGNSFOUNDRIP
 //if no campaign data found throw error and tell clients not to continue init
 if (_rawCampaignData isEqualTo "NOCAMPAIGNSFOUNDRIP") exitWith {diag_log (text "MACP - ERROR: No raw campaign data found, persistance is not active");};
 
+//upgrade save if needed, if upgrade failed abort
+[_rawCampaignData] call macp_core_fnc_checkAndUpgradeSave;
+_currentSaveFileVersion = [1,3,0];
+_campaignVersion = _rawCampaignData get "ver";
+if (_currentSaveFileVersion isNotEqualTo _campaignVersion) exitWith {diag_log (text "MACP - ERROR: Raw campaign data cannot be updated to latest save version, persistance is not active");};
+
+
 macp_currentCampaignDataServer = _rawCampaignData;
 
 [[macp_currentCampaignDataServer], macp_core_fnc_clientInit] remoteExec ["call", 0, true];

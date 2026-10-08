@@ -28,12 +28,24 @@ _requestedUIDUnit = _requestedUID call BIS_fnc_getUnitByUID;
 _allPlayerProfiles = macp_currentCampaignDataServer get "players";
 if (_requestedUID in _allPlayerProfiles) exitWith {};
 
+_defaultEngineerLevel = macp_currentCampaignDataServer get "defaultEngineerLevel";
+_defaultMedicalLevel = macp_currentCampaignDataServer get "defaultMedicalLevel";
+
+if (not macp_setEngineerLevel) then
+{
+	_defaultEngineerLevel = _requestedUIDUnit getVariable ["ace_isEngineer", parseNumber (_requestedUIDUnit getUnitTrait "engineer")];
+};
+if (not macp_setMedicalLevel) then
+{
+	_defaultMedicalLevel = _requestedUIDUnit getVariable ["ace_medical_medicClass", parseNumber (_requestedUIDUnit getUnitTrait "medic")];
+};
+
 _defaultKit = macp_currentCampaignDataServer get "defaultKit";
 
 //if we are not using default kits simply get the current unit loadout
 if (not macp_defaultKit) then
 {
-	_defaultKit = getUnitLoadout player;
+	_defaultKit = getUnitLoadout _requestedUIDUnit;
 };
 
 //define what the player profile looks like
@@ -41,7 +53,9 @@ _defaultPlayerProfileArray = [
 	["lastUsedName", "NONEFOUND"],
 	["currentInventory", _defaultKit],
 	["previousInventorys", createHashMap],
-	["personalVault", [[],[],[],[]]]
+	["personalVault", [[],[],[],[]]],
+	["playerEngineerLevel", _defaultEngineerLevel],
+	["playerMedicalLevel", _defaultMedicalLevel]
 ];
 _playerProfile = createHashMapFromArray _defaultPlayerProfileArray;
 
