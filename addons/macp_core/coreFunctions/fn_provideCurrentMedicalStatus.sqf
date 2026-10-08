@@ -34,7 +34,7 @@ if (not isNull _overideUnit) then
 //cant give the loadout to someone without a unit
 if (isNull _requestedUIDUnit) exitWith {diag_log (text "MACP - ERROR: Requested current medical status with UID that does not point to a unit")};
 
-_currentMedicalStatus = macp_currentCampaignDataServer get "players" get _requestedUID get "playerMedicalStatus";
+_currentMedicalStatus = macp_currentCampaignDataServer get "players" get _requestedUID get "medicalStatus";
 
 if (macp_saveMedicalStatus) then
 {

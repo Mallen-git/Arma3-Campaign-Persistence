@@ -13,19 +13,20 @@
 	Examples:
 		[_hashmap] call macp_core_fnc_checkAndUpgradeSave;
 */
-params[["_saveFile", objNull, [createHashMap]]];
+params[["_saveFile", "NONEPROVIDED", [createHashMap]]];
 
-if (isNull _saveFile) then
+_workingSaves = createHashMapFromArray [["default", _saveFile]];
+
+if (_saveFile isEqualTo "NONEPROVIDED") then
 {
 	_workingSaves = profileNamespace getVariable ["macp_clientAllCampaignData", createHashMap];
-} else {
-	_workingSaves = createHashMapFromArray [["default", _saveFile]];
 };
-{
-	_workingSave = _x;
-	_currentVersion = _workingSave getOrDefault ["ver", objNull];
 
-	if (isNull _currentVersion) exitWith {diag_log (text "MACP - ERROR: Save file upgrade requested but save file has no version")};
+{
+	_workingSave = _y;
+	_currentVersion = _workingSave getOrDefault ["ver", "NONEFOUND"];
+
+	if (_currentVersion isEqualTo "NONEFOUND") exitWith {diag_log (text "MACP - ERROR: Save file upgrade requested but save file has no version")};
 
 	_currentSaveFileVersion = [1,3,0];
 
@@ -46,18 +47,24 @@ if (isNull _saveFile) then
 	if (_notInts) exitWith {diag_log (text "MACP - ERROR: Save file upgrade requested but save files version does not contain only numbers")};
 
 	_tooNew = false;
+	_foundBig = false;
+
 	{
-		if (_x > (_currentSaveFileVersion select _forEachIndex)) then
+		if ((_x > (_currentSaveFileVersion select _forEachIndex)) and (not _foundBig)) then
 		{
 			_tooNew = true;
 			break;
+		};
+		if (_x < (_currentSaveFileVersion select _forEachIndex)) then
+		{
+			_foundBig = true;
 		};
 	} forEach _currentVersion;
 
 	if (_tooNew) exitWith {diag_log (text "MACP - ERROR: Save file upgrade requested but save files version is newer than the current mod version")};
 
-
 	//error checking done, lets do this
+
 	if (_currentVersion isEqualTo [1,0,1]) then {_currentVersion = [1,3,0]; [_workingSave] call macp_core_fnc_upgrade101To130;};
 	_changedVersion = _workingSave get "ver";
 	if (_currentVersion isNotEqualTo _changedVersion) exitWith {diag_log (text "MACP - ERROR: Save file upgrade failed, could not upgrade 1.0.1 to 1.3.0")};

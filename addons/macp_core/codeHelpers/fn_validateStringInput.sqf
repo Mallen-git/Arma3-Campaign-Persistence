@@ -33,14 +33,14 @@ _correctDataChecking = createHashMapFromArray [
 	["playerEngineerLevel", ["SCALAR"]],
 	["playerMedicalLevel", ["SCALAR"]],
 	["playerEODStatus", ["BOOL"]],
-	["playerMedicalStatus", ["STRING"]]
+	["medicalStatus", ["STRING"]]
 ];
 
 //used to make sure each hashmap has the correct items in it
 _correctDataLocation = createHashMapFromArray [
-	["root", ["key", "players", "ver", "defaultKit", "defaultEngineer", "defaultMedical", "defaultEODStatus"]],
+	["root", ["key", "players", "ver", "defaultKit", "defaultEngineerLevel", "defaultMedicalLevel", "defaultEODStatus"]],
 	["players", ["ALLHASHMAPS", "playerProfile"]],
-	["playerProfile", ["previousInventorys", "currentInventory", "lastUsedName", "personalVault", "playerEngineerLevel", "playerMedicalLevel", "playerEODStatus", "playerMedicalStatus"]],
+	["playerProfile", ["previousInventorys", "currentInventory", "lastUsedName", "personalVault", "playerEngineerLevel", "playerMedicalLevel", "playerEODStatus", "medicalStatus"]],
 	["previousInventorys", ["ALLHASHMAPS", "prevInv"]],
 	["prevInv", ["previousInventory", "storageReason"]]
 ];
@@ -60,7 +60,12 @@ _inString = false;
 _inNumber = false;
 _expectingItem = true;
 _expectingComma = false;
+_inTruth = false;
+_inFalse = false;
 _previousUsefulCharacter = "[";
+
+_falsePrevCharacters = createHashMapFromArray [["a", "f"], ["l", "a"], ["s", "l"]];
+_truePrevCharacters = createHashMapFromArray [["r", "t"], ["u", "r"]];
 
 _errorFound = "None";
 
@@ -95,12 +100,20 @@ _errorFound = "None";
 	//check if were in a string, if we are we don"t care whats in here
 	if (_inString) then
 	{
-		//escape string if a double quote is found (this could fail if quotes are used by a string anywhere, will need fixing potentially)
+		//escape string if a double quote is found
 		if (_x isEqualTo """") then
 		{
-			_inString = false;
-			_expectingComma = true;
-			continue;
+			//if next character is also a doublequote this is an inline double quote, lets pretend we are awaiting the next string
+			if (_characters select (_forEachIndex + 1) isEqualTo """") then
+			{
+				_inString = false;
+				_expectingItem = true;
+				continue;
+			} else {
+				_inString = false;
+				_expectingComma = true;
+				continue;
+			};
 		} else {
 			continue;
 		};
@@ -172,9 +185,59 @@ _errorFound = "None";
 			continue;
 		};
 
+		//its true, start tracking that
+		if (_x isEqualTo "f") then
+		{
+			_expectingComma = false;
+			_expectingItem = false;
+			_inFalse = true;
+			continue;
+		};
+
+		//its false, start tracking that
+		if (_x isEqualTo "t") then
+		{
+			_expectingComma = false;
+			_expectingItem = false;
+			_inTruth = true;
+			continue;
+		};
+
 		//not a string, array, or number, could fail if other variable types are used
 		_errorFound = "Array, String, or Number expected at character " + str(_forEachIndex + 1) + ", found """ + _x + """ instead";
 		break;
+	};
+
+	if (_inFalse) then
+	{
+		_shouldBeLastChar = _falsePrevCharacters getOrDefault [_x, "BAD"];
+		if (_shouldBeLastChar isNotEqualTo _previousUsefulCharacterUsing) then
+		{
+			if (_x isNotEqualTo "e") then
+			{
+				_errorFound = "The text ""false"" is expected, it is mispelled at character " + str(_forEachIndex + 1);
+				break;
+			} else {
+				_inFalse = false;
+				_expectingComma = true;
+			};
+		};
+	};
+
+	if (_inTruth) then
+	{
+		_shouldBeLastChar = _truePrevCharacters getOrDefault [_x, "BAD"];
+		if (_shouldBeLastChar isNotEqualTo _previousUsefulCharacterUsing) then
+		{
+			if (_x isNotEqualTo "e") then
+			{
+				_errorFound = "The text ""true"" is expected, it is mispelled at character " + str(_forEachIndex + 1);
+				break;
+			} else {
+				_inTruth = false;
+				_expectingComma = true;
+			};
+		};
 	};
 } forEach _characters;
 

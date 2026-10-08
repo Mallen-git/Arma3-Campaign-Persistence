@@ -56,7 +56,8 @@ class Cfg3DEN
 	{
 		class macpEventHandlers
 		{
-			onMissionLoad = "[] call macp_core_fnc_checkAndUpgradeSave;[] call macp_core_fnc_updateModuleAttributes;";
+			Init = "[] call macp_core_fnc_checkAndUpgradeSave;";
+			onMissionLoad = "[] call macp_core_fnc_updateModuleAttributes;";
 			OnMissionPreviewEnd = "[] call macp_core_fnc_updateModuleAttributes;";
 		};
 	};
