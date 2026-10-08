@@ -35,16 +35,10 @@ if (not isNull _overideUnit) then
 if (isNull _requestedUIDUnit) exitWith {diag_log (text "MACP - ERROR: Requested default engineer level with UID that does not point to a unit")};
 
 _defaultEngineerLevel = macp_currentCampaignDataServer get "defaultEngineerLevel";
-_defaultMedicalLevel = macp_currentCampaignDataServer get "defaultMedicalLevel";
 
 macp_currentCampaignDataServer get "players" get _requestedUID set ["playerEngineerLevel", _defaultEngineerLevel];
-macp_currentCampaignDataServer get "players" get _requestedUID set ["playerMedicalLevel", _defaultMedicalLevel];
 
 if (macp_setEngineerLevel) then
 {
 	_requestedUIDUnit setVariable ["ace_isEngineer", _defaultEngineerLevel, true];
-};
-if (macp_setMedicalLevel) then
-{
-	_requestedUIDUnit setVariable ["ace_medical_medicClass", _defaultMedicalLevel, true];
 };
