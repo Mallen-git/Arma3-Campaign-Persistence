@@ -38,7 +38,7 @@
 [
 	"macp_setDefaultEngineerLevel", // Internal setting name, should always contain a tag! This will be the global variable which takes the value of the setting.
 	"CHECKBOX", // setting type
-	["Reset ACE engineer level on death?", 'Should players engineering levels be set to defaults on death?'],
+	["Reset ACE engineer level on death?", 'Should players engineering levels be set to default on death?'],
 	"MACP - Campaign Persistence", // Pretty name of the category where the setting can be found. Can be stringtable entry.
 	true, // data for this setting: [min, max, default, number of shown trailing decimals]
 	true // "_isGlobal" flag. Set this to true to always have this setting synchronized between all clients in multiplayer
@@ -55,7 +55,24 @@
 [
 	"macp_setDefaultMedicalLevel", // Internal setting name, should always contain a tag! This will be the global variable which takes the value of the setting.
 	"CHECKBOX", // setting type
-	["Reset ACE medic level on death?", 'Should players medic levels be set to defaults on death?'],
+	["Reset ACE medic level on death?", 'Should players medic levels be set to default on death?'],
+	"MACP - Campaign Persistence", // Pretty name of the category where the setting can be found. Can be stringtable entry.
+	true, // data for this setting: [min, max, default, number of shown trailing decimals]
+	true // "_isGlobal" flag. Set this to true to always have this setting synchronized between all clients in multiplayer
+] call CBA_fnc_addSetting;
+
+[
+	"macp_setEOD", // Internal setting name, should always contain a tag! This will be the global variable which takes the value of the setting.
+	"CHECKBOX", // setting type
+	["Set EOD Specialist?", 'Should players EOD specialist status be set, overriding unit defaults?'],
+	"MACP - Campaign Persistence", // Pretty name of the category where the setting can be found. Can be stringtable entry.
+	true, // data for this setting: [min, max, default, number of shown trailing decimals]
+	true // "_isGlobal" flag. Set this to true to always have this setting synchronized between all clients in multiplayer
+] call CBA_fnc_addSetting;
+[
+	"macp_setDefaultEOD", // Internal setting name, should always contain a tag! This will be the global variable which takes the value of the setting.
+	"CHECKBOX", // setting type
+	["Reset ACE medic level on death?", 'Should players EOD specialist status be set to default on death?'],
 	"MACP - Campaign Persistence", // Pretty name of the category where the setting can be found. Can be stringtable entry.
 	true, // data for this setting: [min, max, default, number of shown trailing decimals]
 	true // "_isGlobal" flag. Set this to true to always have this setting synchronized between all clients in multiplayer

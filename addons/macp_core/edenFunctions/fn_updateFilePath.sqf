@@ -26,6 +26,7 @@ _displayNames = createHashMapFromArray [
 	["defaultKit", "Default Kit"],
 	["defaultEngineerLevel", "Default ACE Engineer Level"],
 	["defaultMedicalLevel", "Default ACE Medic Level"],
+	["defaultEODStatus", "Default EOD specialist status"],
 	["ver", "Save Version"],
 	["previousInventorys", "Previous Inventorys"],
 	["previousInventory", "Previous Inventory"],
@@ -34,7 +35,8 @@ _displayNames = createHashMapFromArray [
 	["lastUsedName", "Last Used Name"],
 	["personalVault", "Personal Vault"],
 	["playerEngineerLevel", "ACE Engineer Level"],
-	["playerMedicalLevel", "ACE Medic Level"]
+	["playerMedicalLevel", "ACE Medic Level"],
+	["playerEODStatus", "EOD specialist status"]
 ];
 
 //used to determine what buttons (New, Delete, Edit) are available per item selected
@@ -44,6 +46,7 @@ _availableOptionsPerItem = createHashMapFromArray [
 	["defaultKit", [false, false, true]],
 	["defaultEngineerLevel", [false, false, true]],
 	["defaultMedicalLevel", [false, false, true]],
+	["defaultEODStatus", [false, false, true]],
 	["ver", [false, false, false]],
 	["previousInventorys", [false, false, true]],
 	["previousInventory", [false, false, true]],
@@ -52,7 +55,8 @@ _availableOptionsPerItem = createHashMapFromArray [
 	["lastUsedName", [false, false, false]],
 	["personalVault", [false, true, true]],
 	["playerEngineerLevel", [false, false, true]],
-	["playerMedicalLevel", [false, false, true]]
+	["playerMedicalLevel", [false, false, true]],
+	["playerEODStatus", [false, false, true]]
 ];
 
 //used to determine what buttons (New, Delete, Edit) are available per folder, for folders with unknowable item names

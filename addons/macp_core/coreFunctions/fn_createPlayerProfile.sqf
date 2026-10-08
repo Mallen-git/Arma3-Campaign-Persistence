@@ -30,6 +30,7 @@ if (_requestedUID in _allPlayerProfiles) exitWith {};
 
 _defaultEngineerLevel = macp_currentCampaignDataServer get "defaultEngineerLevel";
 _defaultMedicalLevel = macp_currentCampaignDataServer get "defaultMedicalLevel";
+_defaultEODStatus = macp_currentCampaignDataServer get "defaultEODStatus";
 
 if (not macp_setEngineerLevel) then
 {
@@ -38,6 +39,10 @@ if (not macp_setEngineerLevel) then
 if (not macp_setMedicalLevel) then
 {
 	_defaultMedicalLevel = _requestedUIDUnit getVariable ["ace_medical_medicClass", parseNumber (_requestedUIDUnit getUnitTrait "medic")];
+};
+if (not macp_setEOD) then
+{
+	_defaultEODStatus = [_requestedUIDUnit] call ace_common_fnc_isEOD;
 };
 
 _defaultKit = macp_currentCampaignDataServer get "defaultKit";
@@ -55,7 +60,8 @@ _defaultPlayerProfileArray = [
 	["previousInventorys", createHashMap],
 	["personalVault", [[],[],[],[]]],
 	["playerEngineerLevel", _defaultEngineerLevel],
-	["playerMedicalLevel", _defaultMedicalLevel]
+	["playerMedicalLevel", _defaultMedicalLevel],
+	["playerEODStatus", _defaultEODStatus]
 ];
 _playerProfile = createHashMapFromArray _defaultPlayerProfileArray;
 

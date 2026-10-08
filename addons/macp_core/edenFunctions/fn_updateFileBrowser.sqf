@@ -25,6 +25,7 @@ _displayNames = createHashMapFromArray [
 	["defaultKit", "Default Kit"],
 	["defaultEngineerLevel", "Default ACE Engineer Level"],
 	["defaultMedicalLevel", "Default ACE Medic Level"],
+	["defaultEODStatus", "Default EOD specialist status"],
 	["ver", "Save Version"],
 	["previousInventorys", "Previous Inventorys"],
 	["previousInventory", "Previous Inventory"],
@@ -33,7 +34,8 @@ _displayNames = createHashMapFromArray [
 	["lastUsedName", "Last Used Name"],
 	["personalVault", "Personal Vault"],
 	["playerEngineerLevel", "ACE Engineer Level"],
-	["playerMedicalLevel", "ACE Medic Level"]
+	["playerMedicalLevel", "ACE Medic Level"],
+	["playerEODStatus", "EOD specialist status"]
 ];
 
 _listBox = _display displayCtrl 1500;

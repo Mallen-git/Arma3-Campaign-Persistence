@@ -14,6 +14,8 @@ class CfgFunctions
 			class provideDefaultEngineerLevel {};
 			class provideCurrentMedicalLevel {};
 			class provideDefaultMedicalLevel {};
+			class provideCurrentEODStatus {};
+			class provideDefaultEODStatus {};
 			class saveAllKitsAndVaults {};
 			class saveToPreviousInventorys {};
 			class saveToCurrentInventory {};

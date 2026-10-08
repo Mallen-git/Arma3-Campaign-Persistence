@@ -36,6 +36,7 @@ mcap_initialRespawn = false;
 //request server to give me engineer and medic levels i should have
 [[getPlayerUID player], macp_core_fnc_provideCurrentEngineerLevel] remoteExec ["call", 2];
 [[getPlayerUID player], macp_core_fnc_provideCurrentMedicalLevel] remoteExec ["call", 2];
+[[getPlayerUID player], macp_core_fnc_provideCurrentEODStatus] remoteExec ["call", 2];
 
 //init personal vault
 [[getPlayerUID player], macp_core_fnc_initPersonalVault] remoteExec ["call", 2];
@@ -87,6 +88,9 @@ player addEventHandler ["Respawn", {
 	{
 		mcap_initialRespawn = false;
 		[[getPlayerUID player], macp_core_fnc_provideCurrentLoadout] remoteExec ["call", 2];
+		[[getPlayerUID player], macp_core_fnc_provideCurrentEngineerLevel] remoteExec ["call", 2];
+		[[getPlayerUID player], macp_core_fnc_provideCurrentMedicalLevel] remoteExec ["call", 2];
+		[[getPlayerUID player], macp_core_fnc_provideCurrentEODStatus] remoteExec ["call", 2];
 	} else {
 		if (macp_defaultKit) then
 		{
@@ -103,6 +107,12 @@ player addEventHandler ["Respawn", {
 			[[getPlayerUID player], macp_core_fnc_provideDefaultMedicalLevel] remoteExec ["call", 2];
 		} else {
 			[[getPlayerUID player], macp_core_fnc_provideCurrentMedicalLevel] remoteExec ["call", 2];
+		};
+		if (macp_setDefaultEOD) then
+		{
+			[[getPlayerUID player], macp_core_fnc_provideDefaultEODStatus] remoteExec ["call", 2];
+		} else {
+			[[getPlayerUID player], macp_core_fnc_provideCurrentEODStatus] remoteExec ["call", 2];
 		};
 	};
 }];

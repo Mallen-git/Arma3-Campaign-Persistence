@@ -23,6 +23,7 @@ _correctDataChecking = createHashMapFromArray [
 	["defaultKit", ["ARRAY", 10, "KIT"]],
 	["defaultEngineerLevel", ["SCALAR"]],
 	["defaultMedicalLevel", ["SCALAR"]],
+	["defaultEODStatus", ["BOOL"]],
 	["previousInventorys", ["HASHMAP"]],
 	["previousInventory", ["ARRAY", 10, "KIT"]],
 	["storageReason", ["STRING"]],
@@ -30,14 +31,15 @@ _correctDataChecking = createHashMapFromArray [
 	["lastUsedName", ["STRING"]],
 	["personalVault", ["ARRAY", 4, "VAULT"]],
 	["playerEngineerLevel", ["SCALAR"]],
-	["playerMedicalLevel", ["SCALAR"]]
+	["playerMedicalLevel", ["SCALAR"]],
+	["playerEODStatus", ["BOOL"]]
 ];
 
 //used to make sure each hashmap has the correct items in it
 _correctDataLocation = createHashMapFromArray [
-	["root", ["key", "players", "ver", "defaultKit", "defaultEngineer", "defaultMedical"]],
+	["root", ["key", "players", "ver", "defaultKit", "defaultEngineer", "defaultMedical", "defaultEODStatus"]],
 	["players", ["ALLHASHMAPS", "playerProfile"]],
-	["playerProfile", ["previousInventorys", "currentInventory", "lastUsedName", "personalVault", "playerEngineerLevel", "playerMedicalLevel"]],
+	["playerProfile", ["previousInventorys", "currentInventory", "lastUsedName", "personalVault", "playerEngineerLevel", "playerMedicalLevel", "playerEODStatus"]],
 	["previousInventorys", ["ALLHASHMAPS", "prevInv"]],
 	["prevInv", ["previousInventory", "storageReason"]]
 ];
@@ -266,6 +268,8 @@ _checkHashCorrect = {
 			case "STRING": {};
 
 			case "SCALAR": {};
+
+			case "BOOL": {};
 
 			//if its an array make sure its size is correct, if its not this will be caught and thrown
 			case "ARRAY": {

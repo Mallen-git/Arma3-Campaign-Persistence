@@ -33,8 +33,10 @@ if (_anyNotHashmaps) exitWith {};
 {
 	_y set ["playerEngineerLevel", 0];
 	_y set ["playerMedicalLevel", 0];
+	_y set ["playerEODStatus", false];
 } forEach _playerList;
 
 _saveFile set ["ver", [1,3,0]];
 _saveFile set ["defaultEngineerLevel", 0];
 _saveFile set ["defaultMedicalLevel", 0];
+_saveFile set ["defaultEODStatus", false];
