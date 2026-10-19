@@ -76,5 +76,12 @@ class CfgFunctions
 			class checkAndUpgradeSave {};
 			class upgrade101To130 {};
 		};
+		class customValues
+		{
+			file = "macp_core\customValues";
+			class initCustomValues {};
+			class receiveCustomValues {};
+			class receiveModifyCustomValue {};
+		};
 	};
 };
