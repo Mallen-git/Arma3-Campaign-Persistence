@@ -30,7 +30,7 @@ _folderLookup = createHashMap;
 	if (_actionType isEqualTo "FOLDER") then
 	{
 		//folder
-		_params params ["_actionName"];
+		_params params ["_actionName", "_transferable"];
 		//set folder lookup entry for any values
 		_folderLookup set [_displayName, ["ACE_SelfActions", _actionName]];
 
@@ -62,4 +62,63 @@ _folderLookup = createHashMap;
 	};
 } forEach _actionsToCreate;
 
-//find a way to put transferable values onto other players
+//start PFH to add transferring values to player bodies as they arrive
+[{
+	_actionsToCreate = _this select 0;
+
+	{
+		_externalPlayer = _x;
+
+		_actionsCreated = _externalPlayer getVariable ["macp_customValueActionsCreated", false];
+		if (_actionsCreated) then {continue;};
+
+		_folderLookup = createHashMap;
+
+		{
+			_x params ["_displayName", "_actionType", "_params"];
+
+			if (_actionType isEqualTo "FOLDER") then
+			{
+				//folder
+				_params params ["_actionName", "_transferable"];
+
+				if (not _transferable) then {continue;};
+
+				//set folder lookup entry for any values
+				_folderLookup set [_displayName, ["ACE_MainActions", _actionName]];
+
+				//create empty action to act as a fodler for further actions
+				_action = [_actionName, _displayName, "", {}, {alive _target;}] call ace_interact_menu_fnc_createAction;
+				[_externalPlayer, 0, ["ACE_MainActions"], _action] call ace_interact_menu_fnc_addActionToObject;
+			} else {
+				_params params ["_actionName", "_visible", "_transferable", "_displayFormatChecker", "_parentFolder", "_value"];
+				//get action parent, if none put it in root
+				_parentFolder = _folderLookup getOrDefault [_parentFolder, ["ACE_MainActions"]];
+
+				//if not visible lets exit this action
+				if (not _visible) then {continue;};
+
+				if (not _transferable) then {continue;};
+
+				_action = [_actionName, _displayName, "", {}, {alive _target;}] call ace_interact_menu_fnc_createAction;
+				[_externalPlayer, 0, _parentFolder, _action] call ace_interact_menu_fnc_addActionToObject;
+
+				_parentFolder pushBack _actionName;
+
+				_action = [("give_" + _actionName), "Give " + (name _externalPlayer) + " custom amount...", "",
+					{
+						params ["_target", "_player", "_params"];
+						[_target, (_params select 0)] call macp_core_fnc_openCustomGivingMenu;
+					}, {
+						params ["_target", "_player", "_params"];
+						alive _target;
+					}, {}, _displayName] call ace_interact_menu_fnc_createAction;
+				[_externalPlayer, 0, _parentFolder, _action] call ace_interact_menu_fnc_addActionToObject;
+
+			};
+		} forEach _actionsToCreate;
+
+		_externalPlayer setVariable ["macp_customValueActionsCreated", true];
+	} forEach allPlayers;
+
+}, 10, _actionsToCreate] call CBA_fnc_addPerFrameHandler;

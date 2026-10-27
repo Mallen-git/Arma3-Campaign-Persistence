@@ -45,7 +45,8 @@ _foldersToCreate = [];
 	if (_displayFormatChecker isEqualTo "NONEFOUND") then
 	{
 		//this is a folder
-		_foldersToCreate pushBack [_x, "FOLDER", [_actionName]];
+		_transferable = _y get "folderTransferable";
+		_foldersToCreate pushBack [_x, "FOLDER", [_actionName, _transferable]];
 	} else {
 		//value found
 		_visible = _y get "valueVisible";

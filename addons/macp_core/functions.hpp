@@ -82,6 +82,7 @@ class CfgFunctions
 			class initCustomValues {};
 			class receiveCustomValues {};
 			class receiveModifyCustomValue {};
+			class openCustomGivingMenu {};
 		};
 	};
 };
