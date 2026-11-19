@@ -6,17 +6,18 @@
 
 	Parameter(s):
 		0: STRING - UID of player requesting
-		1: STRING - a list of all actions to be created
-		2: NUMBER - the new value to be assigned to the data
+		1: STRING - Name of the value to modify
+		2: NUMBER - the new value to be assigned to the data (or amount to add if _addToExisting is true)
+		3: BOOL - (Optional, default false) Whether to add the value to the existing balance instead of overwriting
 
 	Returns:
 		None
 
 	Examples:
-		["123456789", "Money", 1234] call macp_core_fnc_receiveCustomValues;
+		["123456789", "Money", 1234] call macp_core_fnc_receiveModifyCustomValue;
 */
 
-params [["_requestedUID", "NOTSUPPLIED", [""]], ["_valueName", "NOTSUPPLIED", [""]], ["_newValue", "NOTSUPPLIED", [0]]];
+params [["_requestedUID", "NOTSUPPLIED", [""]], ["_valueName", "NOTSUPPLIED", [""]], ["_newValue", "NOTSUPPLIED", [0]], ["_addToExisting", false, [false]]];
 
 //need a UID to work with
 if (_requestedUID isEqualTo "NOTSUPPLIED") exitWith {diag_log (text "MACP - ERROR: Requested modify custom value with no supplied UID")};
@@ -29,10 +30,24 @@ if (_newValue isEqualTo "NOTSUPPLIED") exitWith {diag_log (text "MACP - ERROR: R
 
 if (isServer) then
 {
-	macp_currentCampaignDataServer get "players" get _requestedUID get "customValues" get _valueName set ["value", _newValue];
+	_valueHashmap = macp_currentCampaignDataServer get "players" get _requestedUID get "customValues" get _valueName;
+	if (_addToExisting) then
+	{
+		_currentValue = _valueHashmap getOrDefault ["value", 0];
+		_valueHashmap set ["value", (_currentValue + _newValue)];
+	} else {
+		_valueHashmap set ["value", _newValue];
+	};
 };
 
 if (hasInterface) then
 {
-	macp_currentCampaignDataClient get "players" get _requestedUID get "customValues" get _valueName set ["value", _newValue];
+	_valueHashmap = macp_currentCampaignDataClient get "players" get _requestedUID get "customValues" get _valueName;
+	if (_addToExisting) then
+	{
+		_currentValue = _valueHashmap getOrDefault ["value", 0];
+		_valueHashmap set ["value", (_currentValue + _newValue)];
+	} else {
+		_valueHashmap set ["value", _newValue];
+	};
 };

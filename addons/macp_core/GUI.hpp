@@ -561,3 +561,78 @@ class macp_adminMenu
 		};
 	};
 };
+
+class macp_customGivingMenu
+{
+	idd = -1;
+	class ControlsBackground
+	{
+		//Background controls
+
+		class BackgroundDisable: ctrlStaticBackgroundDisable {};
+		class BackgroundDisableTiles: ctrlStaticBackgroundDisableTiles {};
+
+		class Background: ctrlStaticBackground
+		{
+			x = CENTER_X - 0.5 * 53 * GRID_W;
+			y = WINDOW_TOPAbs + CTRL_DEFAULT_H;
+			w = 53 * GRID_W;
+			h = 21 * GRID_H;
+		};
+
+		class Header: ctrlStaticTitle
+		{
+			idc = 5340;
+			text = "MACP Give Custom Value";
+			x = CENTER_X - 0.5 * 53 * GRID_W;
+			y = WINDOW_TOPAbs;
+			w = 53 * GRID_W;
+			h = CTRL_DEFAULT_H;
+		};
+
+		class Footer: ctrlStaticFooter
+		{
+			x = CENTER_X - 0.5 * 53 * GRID_W;
+			y = WINDOW_TOPAbs + 19 * GRID_H;
+			w = 53 * GRID_W;
+			h = CTRL_DEFAULT_H + 2 * GRID_H;
+		};
+	};
+	class Controls
+	{
+		//Controls
+
+		class Text: ctrlStatic
+		{
+			idc = 5341;
+			text = "How much would you like to give?";
+			x = CENTER_X - 0.5 * 53 * GRID_W;
+			y = WINDOW_TOPAbs + 6 * GRID_H;
+			w = 51 * GRID_W;
+			h = CTRL_DEFAULT_H;
+		};
+		class Value: ctrlEdit
+		{
+			idc = 5342;
+			x = CENTER_X - 0.5 * 52 * GRID_W;
+			y = WINDOW_TOPAbs + 13 * GRID_H;
+			w = 51 * GRID_W;
+			h = CTRL_DEFAULT_H;
+		};
+		class Cancel: ctrlButtonCancel
+		{
+			x = CENTER_X - 0.5 * 53 * GRID_W + (53 - 26) * GRID_W;
+			y = WINDOW_TOPAbs + 20 * GRID_H;
+			w = 25 * GRID_W;
+			h = CTRL_DEFAULT_H;
+		};
+		class Save: ctrlButtonOK
+		{
+			text = "Give";
+			x = CENTER_X - 0.5 * 53 * GRID_W + (53 - 52) * GRID_W;
+			y = WINDOW_TOPAbs + 20 * GRID_H;
+			w = 25 * GRID_W;
+			h = CTRL_DEFAULT_H;
+		};
+	};
+};
